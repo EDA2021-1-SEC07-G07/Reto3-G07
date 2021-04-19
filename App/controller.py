@@ -62,3 +62,16 @@ def tracksSize(analyzer):
     Numero de pistas leidos
     """
     return model.tracksSize(analyzer)
+
+
+def artistsSize(analyzer):
+    """
+    Numero de artistas leidos
+    """
+    return model.artistsSize(analyzer)
+
+def uniquetracksSize(analyzer):
+    """
+    Numero de pistas leidos
+    """
+    return model.uniquetracksSize(analyzer)

@@ -63,7 +63,10 @@ while True:
     elif int(inputs[0]) == 2:
         print("Cargando información de los archivos ....")
         controller.loadData(catalog, tracksfile)
+        
         print('Eventos de escucha cargados: ' + str(controller.tracksSize(catalog)))
+        print('Artistas únicos cargados: ' + str(controller.artistsSize(catalog)))
+        print('Pistas de audio únicas cargadas: ' + str(controller.uniquetracksSize(catalog)))
     else:
         sys.exit(0)
 sys.exit(0)

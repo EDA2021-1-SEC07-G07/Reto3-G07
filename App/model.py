@@ -72,7 +72,10 @@ def newAnalyzer():
                 'acousticness': None,
                 'energy': None,
                 'mode': None,
-                'key': None
+                'key': None,
+
+                "artist_id": None,
+                "track_id":None
                 }
 
     for key in analyzer.keys():
@@ -110,7 +113,7 @@ def updateIndex(map, track, characteristic):
     Si no se encuentra creado un nodo para ese valor en el arbol
     se crea y se actualiza el indice de tipos de pistas
     """
-    characteristic_value = float(track[characteristic])
+    characteristic_value = track[characteristic]
     entry = om.get(map, characteristic_value)
     if entry is None:
         datentry = newDataEntry(track)
@@ -173,6 +176,19 @@ def tracksSize(analyzer):
     Número de pistas
     """
     return lt.size(analyzer['tracks'])
+
+def artistsSize(analyzer):
+    """
+    Número de artistas
+    """
+    return om.size(analyzer['artist_id'])
+
+
+def uniquetracksSize(analyzer):
+    """
+    Número de pistas
+    """
+    return om.size(analyzer['track_id'])
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 def compareIds(id1, id2):
