@@ -29,10 +29,36 @@ import csv
 El controlador se encarga de mediar entre la vista y el modelo.
 """
 
-# Inicialización del Catálogo de libros
+# Inicialización del Catálogo de pistas
+
+def init():
+    """
+    Llama la funcion de inicializacion  del modelo.
+    """
+    # catalog es utilizado para interactuar con el modelo
+    analyzer = model.newAnalyzer()
+    return analyzer
 
 # Funciones para la carga de datos
+
+def loadData(analyzer, tracksfile):
+    """
+    Carga los datos de los archivos CSV en el modelo
+    """
+    tracksfile = cf.data_dir + tracksfile
+    input_file = csv.DictReader(open(tracksfile, encoding="utf-8"),
+                                delimiter=",")
+    for track in input_file:
+        model.addTrack(analyzer, track)
+    return analyzer
+
+
 
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
+def tracksSize(analyzer):
+    """
+    Numero de pistas leidos
+    """
+    return model.tracksSize(analyzer)

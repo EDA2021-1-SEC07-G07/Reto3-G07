@@ -36,9 +36,15 @@ operación solicitada
 
 def printMenu():
     print("Bienvenido")
-    print("1- Cargar información en el catálogo")
-    print("2- ")
+    print("1- Inicializar catalogo")
+    print("2- Cargar información en el catálogo")
+    print("3- Conocer eventos de escucha basandose en una característica de contenido y rango determinado")
+    print("4- Encontrar pistas para festejar según su rango de energía y bailabilidad")
+    print("5- Encontrar pistas para estudiar según su rango de tempo e instrumentalidad")
+    print("6- Estudiar los géneros musicales en el catálogo")
+    print("0- Salir")
 
+tracksfile = 'context_content_features-small.csv'
 catalog = None
 
 """
@@ -48,11 +54,16 @@ while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
-        print("Cargando información de los archivos ....")
+
+        print("\nInicializando....")
+        # catalog es el controlador que se usará de acá en adelante
+        catalog = controller.init()
+
 
     elif int(inputs[0]) == 2:
-        pass
-
+        print("Cargando información de los archivos ....")
+        controller.loadData(catalog, tracksfile)
+        print('Eventos de escucha cargados: ' + str(controller.tracksSize(catalog)))
     else:
         sys.exit(0)
 sys.exit(0)
