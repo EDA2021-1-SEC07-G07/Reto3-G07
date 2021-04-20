@@ -61,22 +61,22 @@ def newAnalyzer():
     Retorna el analizador inicializado.
     """
     analyzer = {'tracks': None,
+                "track_id": None,
 
-                'instrumentalness': None,
-                'liveness': None,
-                'speechiness': None,
-                'danceability': None,
-                'valence': None,
-                'loudness': None,
-                'tempo': None,
-                'acousticness': None,
-                'energy': None,
-                'mode': None,
-                'key': None,
+                "instrumentalness": None,
+                "liveness": None,
+                "speechiness": None,
+                "danceability": None,
+                "valence": None,
+                "loudness": None,
+                "tempo": None,
+                "acousticness": None,
+                "energy": None,
+                "mode": None,
+                "key": None,
 
-                "artist_id": None,
-                "track_id":None
-                }
+                "artist_id": None
+}
 
     for key in analyzer.keys():
 
@@ -90,16 +90,20 @@ def newAnalyzer():
     return analyzer
 
 # Funciones para agregar informacion al catalogo
-def addTrack(analyzer, track):
+def addTrack(analyzer, track, updateId = True):
     """
     """
     for key in analyzer.keys():
 
         if key == "tracks":
-            lt.addLast(analyzer[key], track)
+            #Tracks será añadido luego cuando todos los archivos hayan sido fusionados
+            pass
+
+        elif key == "track_id" and updateId == True:
+            updateIndex(analyzer[key], track, key)
 
         else:
-            updateIndex(analyzer[key], track, key)
+            updateHashtagIndex(analyzer[key], track)
 
     return analyzer
 
@@ -120,7 +124,7 @@ def updateIndex(map, track, characteristic):
         om.put(map, characteristic_value, datentry)
     else:
         datentry = me.getValue(entry)
-    addArtistIndex(datentry, track)
+    addUserIndex(datentry, track)
     return map
 
 # Funciones para creacion de datos
@@ -130,16 +134,16 @@ def newDataEntry(track):
     Crea una entrada en el indice por valor de característica, es decir en el arbol
     binario.
     """
-    entry = {'artistIndex': None, 'lsttracks': None}
-    entry['artistIndex'] = m.newMap(numelements=30,
+    entry = {'UserIndex': None, 'lsttracks': None}
+    entry['UserIndex'] = m.newMap(numelements=30,
                                      maptype='PROBING',
-                                     comparefunction=compareArtists)
+                                     comparefunction=compareUsers)
 
     entry['lsttracks'] = lt.newList('SINGLE_LINKED', compareValues)
     return entry
 
 
-def addArtistIndex(datentry, track):
+def addUserIndex(datentry, track):
     """
     Actualiza un indice de tipo de crimenes.  Este indice tiene una lista
     de crimenes y una tabla de hash cuya llave es el tipo de crimen y
@@ -148,26 +152,114 @@ def addArtistIndex(datentry, track):
     """
     lst = datentry['lsttracks']
     lt.addLast(lst, track)
-    offenseIndex = datentry['artistIndex']
-    offentry = m.get(offenseIndex, track['artist_id'])
+    offenseIndex = datentry['UserIndex']
+    offentry = m.get(offenseIndex, track['user_id'])
     if (offentry is None):
-        entry = newArtistEntry(track['artist_id'], track)
-        lt.addLast(entry['lstartists'], track)
-        m.put(offenseIndex, track['artist_id'], entry)
+        entry = newUserEntry(track['user_id'], track)
+        lt.addLast(entry['lstUsers'], track)
+        m.put(offenseIndex, track['user_id'], entry)
     else:
         entry = me.getValue(offentry)
-        lt.addLast(entry['lstartists'], track)
+        lt.addLast(entry['lstUsers'], track)
+
     return datentry
 
-def newArtistEntry(offensegrp, crime):
+def newUserEntry(offensegrp, crime):
     """
-    Crea una entrada en el indice por artista, es decir en
+    Crea una entrada en el indice por Usera, es decir en
     la tabla de hash, que se encuentra en cada nodo del arbol.
     """
-    ofentry = {'artist_id': None, 'lstartists': None}
-    ofentry['artist_id'] = offensegrp
-    ofentry['lstartists'] = lt.newList('SINGLELINKED', compareArtists)
+    ofentry = {'user_id': None, 'lstUsers': None}
+    ofentry['user_id'] = offensegrp
+    ofentry['lstUsers'] = lt.newList('SINGLELINKED', compareUsers)
     return ofentry
+
+
+##### Extra Functions (Después de cargar ambas bases de datos) #################################
+
+def iterateCompleteCatalog(analyzer):
+
+    node_list = om.valueSet(analyzer["track_id"])
+
+    for node in lt.iterator(node_list):
+
+        user_list = m.valueSet(node["UserIndex"])
+
+        for user in lt.iterator(user_list):
+        
+            track_list = user["lstUsers"]
+
+            for track in lt.iterator(track_list):
+                
+                lt.addLast(analyzer["tracks"], track)
+
+                addTrack(analyzer, track, False)
+
+            
+
+def updateHashtagIndex(map, track):
+    """
+    Se toma la fecha del crimen y se busca si ya existe en el arbol
+    dicha fecha.  Si es asi, se adiciona a su lista de crimenes
+    y se actualiza el indice de tipos de crimenes.
+
+    Si no se encuentra creado un nodo para esa fecha en el arbol
+    se crea y se actualiza el indice de tipos de crimenes
+    """
+    hashtag = track['hashtag']
+  
+    entry = om.get(map, hashtag)
+    if entry is None:
+        datentry = newHashDataEntry(track)
+        om.put(map, hashtag, datentry)
+    else:
+        datentry = me.getValue(entry)
+    addHashtagIndex(datentry, track)
+    return map
+
+def addHashtagIndex(datentry, track):
+    """
+    Actualiza un indice de tipo de crimenes.  Este indice tiene una lista
+    de crimenes y una tabla de hash cuya llave es el tipo de crimen y
+    el valor es una lista con los crimenes de dicho tipo en la fecha que
+    se está consultando (dada por el nodo del arbol)
+    """
+    lst = datentry['lsttracks']
+    lt.addLast(lst, track)
+    offenseIndex = datentry['hashtagIndex']
+    offentry = m.get(offenseIndex, track['hashtag'])
+    if (offentry is None):
+        entry = newHashtagEntry(track['hashtag'], track)
+        lt.addLast(entry['lsthashtags'], track)
+        m.put(offenseIndex, track['hashtag'], entry)
+    else:
+        entry = me.getValue(offentry)
+        lt.addLast(entry['lsthashtags'], track)
+    return datentry
+
+
+def newHashtagEntry(offensegrp, crime):
+    """
+    Crea una entrada en el indice por tipo de crimen, es decir en
+    la tabla de hash, que se encuentra en cada nodo del arbol.
+    """
+    ofentry = {'hashtag': None, 'lsthashtags': None}
+    ofentry['hashtag'] = offensegrp
+    ofentry['lsthashtags'] = lt.newList('SINGLELINKED', compareHashtags)
+    return ofentry
+
+
+def newHashDataEntry(track):
+    """
+    Crea una entrada en el indice por fechas, es decir en el arbol
+    binario.
+    """
+    entry = {'hashtagIndex': None, 'lsttracks': None}
+    entry['hashtagIndex'] = m.newMap(numelements=30,
+                                     maptype='PROBING',
+                                     comparefunction=compareHashtags)
+    entry['lsttracks'] = lt.newList('SINGLE_LINKED', compareValues)
+    return entry
 
 # Funciones de consulta
 
@@ -179,7 +271,7 @@ def tracksSize(analyzer):
 
 def artistsSize(analyzer):
     """
-    Número de artistas
+    Número de Useras
     """
     return om.size(analyzer['artist_id'])
 
@@ -213,14 +305,26 @@ def compareValues(value1, value2):
     else:
         return -1
 
-def compareArtists(artist1, artist2):
+def compareUsers(User1, User2):
     """
     Compara dos tipos de crimenes
     """
-    offense = me.getKey(artist2)
-    if (artist1 == offense):
+    offense = me.getKey(User2)
+    if (User1 == offense):
         return 0
-    elif (artist1 > offense):
+    elif (User1 > offense):
+        return 1
+    else:
+        return -1
+
+def compareHashtags(hashtag1, hashtag2):
+    """
+    Compara dos tipos de crimenes
+    """
+    offense = me.getKey(hashtag2)
+    if (hashtag1 == offense):
+        return 0
+    elif (hashtag1 > offense):
         return 1
     else:
         return -1

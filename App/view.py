@@ -44,7 +44,7 @@ def printMenu():
     print("6- Estudiar los géneros musicales en el catálogo")
     print("0- Salir")
 
-tracksfile = 'context_content_features-small.csv'
+tracksfile = 'user_track_hashtag_timestamp-small.csv'
 catalog = None
 
 """
@@ -65,7 +65,7 @@ while True:
         controller.loadData(catalog, tracksfile)
         
         print('Eventos de escucha cargados: ' + str(controller.tracksSize(catalog)))
-        print('Artistas únicos cargados: ' + str(controller.artistsSize(catalog)))
+        #print('Artistas únicos cargados: ' + str(controller.artistsSize(catalog)))
         print('Pistas de audio únicas cargadas: ' + str(controller.uniquetracksSize(catalog)))
     else:
         sys.exit(0)
