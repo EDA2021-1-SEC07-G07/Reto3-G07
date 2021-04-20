@@ -103,7 +103,13 @@ def addTrack(analyzer, track, updateId = True):
             updateIndex(analyzer[key], track, key)
 
         else:
-            updateHashtagIndex(analyzer[key], track)
+
+            try:
+                updateArtistIndex(analyzer[key], track, key)
+
+            except Exception:
+                pass
+
 
     return analyzer
 
@@ -197,7 +203,7 @@ def iterateCompleteCatalog(analyzer):
 
             
 
-def updateHashtagIndex(map, track):
+def updateArtistIndex(map, track, key):
     """
     Se toma la fecha del crimen y se busca si ya existe en el arbol
     dicha fecha.  Si es asi, se adiciona a su lista de crimenes
@@ -206,18 +212,18 @@ def updateHashtagIndex(map, track):
     Si no se encuentra creado un nodo para esa fecha en el arbol
     se crea y se actualiza el indice de tipos de crimenes
     """
-    hashtag = track['hashtag']
+    value = track[key]
   
-    entry = om.get(map, hashtag)
+    entry = om.get(map, value)
     if entry is None:
-        datentry = newHashDataEntry(track)
-        om.put(map, hashtag, datentry)
+        datentry = newArtistDataEntry(track)
+        om.put(map, value, datentry)
     else:
         datentry = me.getValue(entry)
-    addHashtagIndex(datentry, track)
+    addArtistIndex(datentry, track)
     return map
 
-def addHashtagIndex(datentry, track):
+def addArtistIndex(datentry, track):
     """
     Actualiza un indice de tipo de crimenes.  Este indice tiene una lista
     de crimenes y una tabla de hash cuya llave es el tipo de crimen y
@@ -226,38 +232,38 @@ def addHashtagIndex(datentry, track):
     """
     lst = datentry['lsttracks']
     lt.addLast(lst, track)
-    offenseIndex = datentry['hashtagIndex']
-    offentry = m.get(offenseIndex, track['hashtag'])
+    offenseIndex = datentry['ArtistIndex']
+    offentry = m.get(offenseIndex, track['artist_id'])
     if (offentry is None):
-        entry = newHashtagEntry(track['hashtag'], track)
-        lt.addLast(entry['lsthashtags'], track)
-        m.put(offenseIndex, track['hashtag'], entry)
+        entry = newArtistEntry(track['artist_id'], track)
+        lt.addLast(entry['lstartists'], track)
+        m.put(offenseIndex, track['artist_id'], entry)
     else:
         entry = me.getValue(offentry)
-        lt.addLast(entry['lsthashtags'], track)
+        lt.addLast(entry['lstartists'], track)
     return datentry
 
 
-def newHashtagEntry(offensegrp, crime):
+def newArtistEntry(offensegrp, crime):
     """
     Crea una entrada en el indice por tipo de crimen, es decir en
     la tabla de hash, que se encuentra en cada nodo del arbol.
     """
-    ofentry = {'hashtag': None, 'lsthashtags': None}
-    ofentry['hashtag'] = offensegrp
-    ofentry['lsthashtags'] = lt.newList('SINGLELINKED', compareHashtags)
+    ofentry = {'artist_id': None, 'lstartists': None}
+    ofentry['artist_id'] = offensegrp
+    ofentry['lstartists'] = lt.newList('SINGLELINKED', compareArtists)
     return ofentry
 
 
-def newHashDataEntry(track):
+def newArtistDataEntry(track):
     """
     Crea una entrada en el indice por fechas, es decir en el arbol
     binario.
     """
-    entry = {'hashtagIndex': None, 'lsttracks': None}
-    entry['hashtagIndex'] = m.newMap(numelements=30,
+    entry = {'ArtistIndex': None, 'lsttracks': None}
+    entry['ArtistIndex'] = m.newMap(numelements=30,
                                      maptype='PROBING',
-                                     comparefunction=compareHashtags)
+                                     comparefunction=compareArtists)
     entry['lsttracks'] = lt.newList('SINGLE_LINKED', compareValues)
     return entry
 
@@ -282,6 +288,17 @@ def uniquetracksSize(analyzer):
     """
     return om.size(analyzer['track_id'])
 
+
+def getTracksByRange(analyzer, initialValue, finalValue, contentCharacteristic):
+    """
+    Retorna el numero de eventos de escucha en un rago de fechas.
+    """
+    lst = om.values(analyzer[contentCharacteristic], initialValue, finalValue)
+    tottracks = 0
+    for lstdate in lt.iterator(lst):
+        tottracks += lt.size(lstdate['lsttracks'])
+    return tottracks
+
 # Funciones utilizadas para comparar elementos dentro de una lista
 def compareIds(id1, id2):
     """
@@ -298,6 +315,14 @@ def compareValues(value1, value2):
     """
     Compara dos valores de una característica específica
     """
+    try:
+        value1 = float(value1) 
+        value2 = float(value2) 
+
+    except Exception:
+        pass
+
+
     if (value1 == value2):
         return 0
     elif (value1 > value2):
@@ -317,14 +342,14 @@ def compareUsers(User1, User2):
     else:
         return -1
 
-def compareHashtags(hashtag1, hashtag2):
+def compareArtists(artist1, artist2):
     """
     Compara dos tipos de crimenes
     """
-    offense = me.getKey(hashtag2)
-    if (hashtag1 == offense):
+    offense = me.getKey(artist2)
+    if (artist1 == offense):
         return 0
-    elif (hashtag1 > offense):
+    elif (artist1 > offense):
         return 1
     else:
         return -1

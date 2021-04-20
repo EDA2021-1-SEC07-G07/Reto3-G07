@@ -108,11 +108,24 @@ def loadData(analyzer, tracksfile):
                     sentiment_data = me.getValue(sentiment_entry)
 
                     for key, value in sentiment_data.items():
+                        
                         track[key] = value
 
     model.iterateCompleteCatalog(analyzer)
 
-    return analyzer
+
+def getTracksByRange(analyzer, initialValue, finalValue, contentCharacteristic):
+    """
+    Retorna el total de crimenes en un rango de fechas
+    """
+    initialValue = float(initialValue)
+    finalValue = float(finalValue)
+
+    return model.getTracksByRange(analyzer, initialValue,
+                                  finalValue, contentCharacteristic)
+
+
+    
 
 
 # Funciones de ordenamiento
