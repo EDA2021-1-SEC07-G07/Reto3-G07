@@ -65,7 +65,7 @@ while True:
         controller.loadData(catalog, tracksfile)
         
         print('Eventos de escucha cargados: ' + str(controller.tracksSize(catalog)))
-        #print('Artistas únicos cargados: ' + str(controller.artistsSize(catalog)))
+        print('Artistas únicos cargados: ' + str(controller.artistsSize(catalog)))
         print('Pistas de audio únicas cargadas: ' + str(controller.uniquetracksSize(catalog)))
 
 
@@ -77,8 +77,8 @@ while True:
         finalValue = input("Valor máximo de la característica escogida: ")
 
         total = controller.getTracksByRange(catalog, initialValue, finalValue, contentCharacteristic)
-        print("\nTotal de eventos de escucha en el rango de valores para la característica elegida: " + str(total))
-
+        print("\nTotal de eventos de escucha en el rango de valores para la característica elegida: " + str(total[0]))
+        print("\nTotal de artistas únicos en el rango de valores para la característica elegida: " + str(total[1]))
 
     else:
         sys.exit(0)

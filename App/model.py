@@ -295,9 +295,11 @@ def getTracksByRange(analyzer, initialValue, finalValue, contentCharacteristic):
     """
     lst = om.values(analyzer[contentCharacteristic], initialValue, finalValue)
     tottracks = 0
+    totartists = 0
     for lstdate in lt.iterator(lst):
+        totartists += 1
         tottracks += lt.size(lstdate['lsttracks'])
-    return tottracks
+    return tottracks, totartists
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 def compareIds(id1, id2):
