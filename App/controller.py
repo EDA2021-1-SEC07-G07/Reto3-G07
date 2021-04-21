@@ -127,7 +127,8 @@ def getTracksByRange(analyzer, initialValue, finalValue, contentCharacteristic):
 
     
 
-
+def events_load(analyzer):
+    return model.events_load(analyzer)
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo

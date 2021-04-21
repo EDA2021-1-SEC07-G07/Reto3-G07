@@ -68,6 +68,9 @@ while True:
         print('Artistas únicos cargados: ' + str(controller.artistsSize(catalog)))
         print('Pistas de audio únicas cargadas: ' + str(controller.uniquetracksSize(catalog)))
 
+        text_load=controller.events_load(catalog)
+        print("\n",text_load)
+
 
     elif int(inputs[0]) == 3:
         print("Buscando eventos de escucha en un rango determinado para una característica:")
@@ -79,7 +82,6 @@ while True:
         total = controller.getTracksByRange(catalog, initialValue, finalValue, contentCharacteristic)
         print("\nTotal de eventos de escucha en el rango de valores para la característica elegida: " + str(total[0]))
         print("\nTotal de artistas únicos en el rango de valores para la característica elegida: " + str(total[1]))
-
     else:
         sys.exit(0)
 sys.exit(0)

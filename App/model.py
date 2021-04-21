@@ -61,7 +61,7 @@ def newAnalyzer():
     Retorna el analizador inicializado.
     """
     analyzer = {'tracks': None,
-                "track_id": None,
+                "track_id": None, #
 
                 "instrumentalness": None,
                 "liveness": None,
@@ -90,6 +90,47 @@ def newAnalyzer():
     return analyzer
 
 # Funciones para agregar informacion al catalogo
+
+def events_load(analyzer):
+    tracks=analyzer["tracks"]
+
+    begin=6
+    last=lt.size(tracks)-5
+
+    first_last_tracks=lt.newList('SINGLE_LINKED')
+
+    for i in range(5):
+        first_element=lt.getElement(tracks,begin)
+        last_element=lt.getElement(tracks, last)
+
+        lt.addFirst(first_last_tracks,first_element)
+        lt.addLast(first_last_tracks,last_element)
+
+        begin-=1
+        last+=1
+    text = ""
+    
+    iterator=lt.iterator(first_last_tracks)
+
+    max_size=80 #tamaño de impresion 
+    upper="-"*(max_size+18)+"\n"
+    
+    pos=1
+    for i in iterator:
+        text += upper+"|{}|\n".format(("VIDEO "+str(pos)).center(max_size+16))+upper
+        for j in i:
+            a=str(j).center(15)
+            b=str(i[j]).center(max_size)
+            value="|{}|{}|\n".format(a,b)
+            text+=value
+            text+=upper    
+        pos+=1                
+        text+="\n"*3
+
+    return text
+
+
+
 def addTrack(analyzer, track, updateId = True):
     """
     """
