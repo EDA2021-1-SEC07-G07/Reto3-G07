@@ -338,8 +338,11 @@ def getTracksByRange(analyzer, initialValue, finalValue, contentCharacteristic):
     tottracks = 0
     totartists = 0
     for lstdate in lt.iterator(lst):
-        totartists += 1
+
+        totartists += m.size(lstdate["ArtistIndex"])
+
         tottracks += lt.size(lstdate['lsttracks'])
+
     return tottracks, totartists
 
 # Funciones utilizadas para comparar elementos dentro de una lista
