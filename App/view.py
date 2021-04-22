@@ -94,7 +94,11 @@ while True:
 
         total = controller.getReq2(catalog, minEnergy, maxEnergy ,  minDance, maxDance)
 
-        print("Total de pistas únicas dentro de los parametros establecidos: {}".format(total[0]))
+        pistas_unicas_size = total[0]
+        pistas_aleatorias = total[1]
+
+        print("Total de pistas únicas dentro de los parametros establecidos: {}".format(pistas_unicas_size))
+        
 
     else:
         sys.exit(0)

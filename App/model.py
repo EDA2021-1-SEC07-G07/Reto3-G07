@@ -31,6 +31,7 @@ from DISClib.ADT import orderedmap as om
 from DISClib.DataStructures import mapentry as me
 from DISClib.ADT import map as m
 import datetime
+import random
 assert config
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
@@ -360,8 +361,11 @@ def getReq2(analyzer, energyMin, energyMax, danceMin, danceMax):
 
     #Gets the number of unique tracks
     fusion_map_size = m.size(fusion_map)
+
+    #Gets 5 random tracks
+    random_list = randomSubListFromMap(fusion_map, 5)
     
-    return  fusion_map_size
+    return  fusion_map_size, random_list
 
 
 ##############################################################################################
@@ -452,12 +456,22 @@ def fusionMaps(map1, map2):
     return fusion_map
 
 
+def randomSubListFromMap(map, numelements):
 
+    value_list = m.valueSet(map)
+    map_size = m.size(map)
 
+    random_list = lt.newList('SINGLE_LINKED', compareIds)
 
+    for n in range(numelements):
 
+        random_pos = random.randint(1,map_size)
 
+        random_item = lt.getElement(value_list, random_pos)
 
+        lt.addLast(random_list, random_item)
+
+    return random_list
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 def compareIds(id1, id2):
