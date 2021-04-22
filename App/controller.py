@@ -135,6 +135,11 @@ def getReq2(analyzer, energyMin, energyMax, danceMin, danceMax):
     return model.getReq2(analyzer, energyMin, energyMax, danceMin, danceMax)
     
 
+def getReq3(analyzer, final_dict):
+
+    return model.getReq3(analyzer, final_dict)
+
+
 def events_load(analyzer):
     return model.events_load(analyzer)
 # Funciones de ordenamiento
@@ -158,3 +163,34 @@ def uniquetracksSize(analyzer):
     Numero de pistas leidos
     """
     return model.uniquetracksSize(analyzer)
+
+def newGeneros():
+     
+    dict_generos = {
+
+        "Reggae": {"min":60, "max":90},
+
+        "Down-tempo":{"min":70, "max":100},
+
+        "Chill-out": {"min":90, "max":120},
+
+        "Hip-hop": {"min":85, "max":115},
+
+        "Jazz and Funk": {"min":120, "max":125},
+
+        "Pop": {"min":100, "max":130},
+
+        "R&B": {"min":60, "max":80},
+
+        "Rock": {"min":110, "max":140},
+
+        "Metal": {"min":100, "max":160}
+    }
+
+    return dict_generos
+
+
+
+def addGenero(dict_generos, name, min, max):
+     
+    return model.addGenero(dict_generos, name, min, max)

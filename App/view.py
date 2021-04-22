@@ -47,6 +47,28 @@ def printMenu():
 tracksfile = 'user_track_hashtag_timestamp-small.csv'
 catalog = None
 
+
+def iterAddGenre(dict_generos):
+
+    for genero in dict_generos.keys():
+
+        print("-{}".format(genero))
+
+    add_genre = input("¿Desea añadir un nuevo género? S / N: ")
+
+    if add_genre.lower() == "s":
+
+        new_name = input("El nuevo nombre de su género será: ")
+        new_min = input("El BPM mínimo de su género será: ")
+        new_max = input("El BPM máximo de su género será: ")
+            
+        new_dict = controller.addGenero(dict_generos, new_name, new_min, new_max)
+
+        return iterAddGenre(new_dict)
+
+    return dict_generos
+
+
 """
 Menu principal
 """
@@ -99,7 +121,40 @@ while True:
 
         print("Total de pistas únicas dentro de los parametros establecidos: {}".format(pistas_unicas_size))
         
+    elif int(inputs[0]) == 5:
+        pass
+
+    elif int(inputs[0]) == 6:
+
+        dict_generos = controller.newGeneros()
+
+        print("Preparandose para estudiar los géneros musicales en el catalogo...")
+
+        print("Géneros musicales dispobles para realizar su búsqueda: ")
+
+        new_dict = iterAddGenre(dict_generos)
+
+        genre_names = input("Por favor ingrese los géneros sobre los que desea buscar separados por una coma: ")
+
+        genre_list = genre_names.split(",")
+
+        final_dict = {}
+
+        for genre in genre_list:
+
+            genre = genre.strip()
+
+            if genre in new_dict.keys():
+
+                final_dict[genre] = new_dict[genre]
+                
+
+        total = controller.getReq3(catalog, final_dict)
 
     else:
         sys.exit(0)
 sys.exit(0)
+
+
+
+            

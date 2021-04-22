@@ -90,7 +90,23 @@ def newAnalyzer():
 
     return analyzer
 
+
+
+
+
 # Funciones para agregar informacion al catalogo
+
+def addGenero(dict_generos, name, min, max):
+
+    dict_generos[name] = {}
+
+    dict_generos[name]["min"] = min
+
+    dict_generos[name]["max"] = max
+
+    return dict_generos
+     
+
 
 def events_load(analyzer):
     tracks=analyzer["tracks"]
@@ -366,6 +382,71 @@ def getReq2(analyzer, energyMin, energyMax, danceMin, danceMax):
     random_list = randomSubListFromMap(fusion_map, 5)
     
     return  fusion_map_size, random_list
+
+
+def getReq3(analyzer, final_dict):
+
+    tottracks_total = 0
+    tottracks_map = m.newMap(numelements=30,
+                                     maptype='PROBING',
+                                     comparefunction=compareArtists)
+
+    sizetracks_map = m.newMap(numelements=30,
+                                     maptype='PROBING',
+                                     comparefunction=compareArtists)
+
+    for key in final_dict.keys():
+
+        genre_name = key
+
+        genre_min = final_dict[key]["min"]
+        genre_max = final_dict[key]["max"]
+
+        node_list_tempo = getTrackListByRange(analyzer, genre_min, genre_max, "tempo")
+
+        sizes = getTreeMapSize(node_list_tempo)
+
+        #Primer valor a mostrar -Total de eventos de escucha (por genero)
+        tottracks_genre = sizes[0]
+
+        m.put(tottracks_map, genre_name, lt.newList('SINGLE_LINKED'))
+
+        m.put(sizetracks_map, genre_name, tottracks_genre)
+
+        #Se suma al total de los tracks para los géneros buscados
+        tottracks_total += tottracks_genre 
+
+        #Se obtiene el ID de los primeros 10 artistas
+        artist_count = 0
+        
+        for lstdate in lt.iterator(node_list_tempo):
+            artist_lst =  m.keySet(lstdate["ArtistIndex"])
+
+            for artist_id in lt.iterator(artist_lst):
+            
+                entry = m.get(tottracks_map, genre_name)
+                datentry = me.getValue(entry)
+
+                lt.addLast(datentry, artist_id)
+                artist_count += 1
+
+                if artist_count >= 10:
+                    break
+            
+            if artist_count >= 10:
+                break
+
+                
+    #sizetracks_map ---- Hash Map cuya llave es el género y cuyo valor es la cantidad de tracks
+    
+    #sizetracks_map ---- Hash Map cuya llave es el género y cuyo valor una lista con los 10 ids de los primeros artistas en aparecer
+
+    #TODO ----- Número de artistas únicos para todo lo buscado
+    #TODO ----- Tracks únicos de todo lo buscado
+
+
+
+
 
 
 ##############################################################################################
