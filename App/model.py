@@ -330,11 +330,26 @@ def uniquetracksSize(analyzer):
     return om.size(analyzer['track_id'])
 
 
-def getTracksByRange(analyzer, initialValue, finalValue, contentCharacteristic):
+def getReq1(analyzer, initialValue, finalValue, contentCharacteristic):
     """
     Retorna el numero de eventos de escucha en un rago de fechas.
     """
+    node_list = getTrackListByRange(analyzer, initialValue, finalValue, contentCharacteristic)
+
+    sizes = getTreeMapSize(node_list)
+
+    return sizes
+
+
+def getTrackListByRange(analyzer, initialValue, finalValue, contentCharacteristic):
+
     lst = om.values(analyzer[contentCharacteristic], initialValue, finalValue)
+
+    return lst
+
+
+def getTreeMapSize(track_list):
+
     tottracks = 0
     totartists = 0
 
@@ -342,7 +357,7 @@ def getTracksByRange(analyzer, initialValue, finalValue, contentCharacteristic):
                                      maptype='PROBING',
                                      comparefunction=compareArtists)
 
-    for lstdate in lt.iterator(lst):
+    for lstdate in lt.iterator(track_list):
 
         #Se buscan los artistas en una nueva tabla de hash para filtrar efectivamente los artistas únicos
         artist_lst =  m.keySet(lstdate["ArtistIndex"])

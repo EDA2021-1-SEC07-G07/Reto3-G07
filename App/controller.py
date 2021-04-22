@@ -114,14 +114,14 @@ def loadData(analyzer, tracksfile):
     model.iterateCompleteCatalog(analyzer)
 
 
-def getTracksByRange(analyzer, initialValue, finalValue, contentCharacteristic):
+def getReq1(analyzer, initialValue, finalValue, contentCharacteristic):
     """
     Retorna el total de crimenes en un rango de fechas
     """
     initialValue = float(initialValue)
     finalValue = float(finalValue)
 
-    return model.getTracksByRange(analyzer, initialValue,
+    return model.getReq1(analyzer, initialValue,
                                   finalValue, contentCharacteristic)
 
 

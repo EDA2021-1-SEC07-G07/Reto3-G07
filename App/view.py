@@ -79,9 +79,19 @@ while True:
         initialValue = input("Valor mínimo de la característica escogida: ")
         finalValue = input("Valor máximo de la característica escogida: ")
 
-        total = controller.getTracksByRange(catalog, initialValue, finalValue, contentCharacteristic)
+        total = controller.getReq1(catalog, initialValue, finalValue, contentCharacteristic)
         print("\nTotal de eventos de escucha en el rango de valores para la característica elegida: " + str(total[0]))
         print("\nTotal de artistas únicos en el rango de valores para la característica elegida: " + str(total[1]))
+
+    elif int(inputs[0]) == 4:
+        print("Buscando pistas únicas para festejar...")
+
+        minEnergy = input("Valor mínimo de la característica energy: ")
+        maxEnergy = input("Valor máximo de la característica energy: ")
+
+        minDance = input("Valor mínimo de la característica danceability: ")
+        maxDance = input("Valor máximo de la característica danceability: ")
+
     else:
         sys.exit(0)
 sys.exit(0)
