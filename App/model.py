@@ -337,9 +337,22 @@ def getTracksByRange(analyzer, initialValue, finalValue, contentCharacteristic):
     lst = om.values(analyzer[contentCharacteristic], initialValue, finalValue)
     tottracks = 0
     totartists = 0
+
+    temporal_artist_map =  m.newMap(numelements=30,
+                                     maptype='PROBING',
+                                     comparefunction=compareArtists)
+
     for lstdate in lt.iterator(lst):
 
-        totartists += m.size(lstdate["ArtistIndex"])
+        #Se buscan los artistas en una nueva tabla de hash para filtrar efectivamente los artistas únicos
+        artist_lst =  m.keySet(lstdate["ArtistIndex"])
+
+        for artist_id in lt.iterator(artist_lst):
+            
+            m.put(temporal_artist_map, artist_id, None)
+
+        #Se obiene el tamaño (artistas únicos) del mapa temporal creado
+        totartists = m.size(temporal_artist_map)
 
         tottracks += lt.size(lstdate['lsttracks'])
 
