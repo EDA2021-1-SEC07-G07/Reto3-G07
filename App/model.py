@@ -329,6 +329,9 @@ def uniquetracksSize(analyzer):
     """
     return om.size(analyzer['track_id'])
 
+############################################################################################
+# FUNCIONES DE REQUERIMIENTOS #############################################################
+###########################################################################################
 
 def getReq1(analyzer, initialValue, finalValue, contentCharacteristic):
     """
@@ -340,6 +343,30 @@ def getReq1(analyzer, initialValue, finalValue, contentCharacteristic):
 
     return sizes
 
+
+def getReq2(analyzer, energyMin, energyMax, danceMin, danceMax):
+    """
+    Retorna el numero de eventos de escucha en un rago de fechas.
+    """
+    node_list_energy = getTrackListByRange(analyzer, energyMin, energyMax, "energy")
+
+    node_list_dance = getTrackListByRange(analyzer, danceMin, danceMax, "danceability")
+
+    unique_energy = UniqueMap(node_list_energy)
+
+    unique_dance = UniqueMap(node_list_dance)
+
+    fusion_map = fusionMaps(unique_energy, unique_dance)
+
+    #Gets the number of unique tracks
+    fusion_map_size = m.size(fusion_map)
+    
+    return  fusion_map_size
+
+
+##############################################################################################
+################# FUNCIONES AUXILIARES #######################################################
+##############################################################################################
 
 def getTrackListByRange(analyzer, initialValue, finalValue, contentCharacteristic):
 
@@ -372,6 +399,65 @@ def getTreeMapSize(track_list):
         tottracks += lt.size(lstdate['lsttracks'])
 
     return tottracks, totartists
+
+
+def UniqueMap(lst):
+
+    unique_map =  m.newMap(numelements=30,
+                                     maptype='PROBING',
+                                     comparefunction=compareArtists)
+
+    #Se entra al arbol (ordenado por valor)
+    for node in lt.iterator(lst):
+
+        #Se entra a los valores del mapa (lista con tracks)
+        track_lst =  node["lsttracks"]
+
+        for track in lt.iterator(track_lst):
+            #Se accede al track ID de cada track 
+            track_id = track["track_id"]
+
+            #Se revisa si ese track_id ya es la llave del unique_map
+
+            if not m.contains(unique_map, track_id):
+
+                #En dado caso de que no lo contenga, añadimos un track a esa llave
+                m.put(unique_map, track_id, track)
+
+    #De esta forma se retorna un diccionario cuyas llaves son los track_id y dentro de estas existe la información de un track único
+    return unique_map
+
+    
+def fusionMaps(map1, map2):
+    #Fusiona mapas que tienen el mismo tipo de llave en un nuevo mapa único
+
+    fusion_map =  m.newMap(numelements=30,
+                                     maptype='PROBING',
+                                     comparefunction=compareArtists)
+
+    map1_keys = m.keySet(map1)
+
+    for key in lt.iterator(map1_keys):
+
+        if m.contains(map2, key):
+            
+            common_key = key 
+            
+            entry = m.get(map2, key)
+
+            common_value = me.getValue(entry)
+
+            m.put(fusion_map, common_key, common_value)
+
+    return fusion_map
+
+
+
+
+
+
+
+
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 def compareIds(id1, id2):

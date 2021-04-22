@@ -92,6 +92,10 @@ while True:
         minDance = input("Valor mínimo de la característica danceability: ")
         maxDance = input("Valor máximo de la característica danceability: ")
 
+        total = controller.getReq2(catalog, minEnergy, maxEnergy ,  minDance, maxDance)
+
+        print("Total de pistas únicas dentro de los parametros establecidos: {}".format(total[0]))
+
     else:
         sys.exit(0)
 sys.exit(0)

@@ -124,7 +124,15 @@ def getReq1(analyzer, initialValue, finalValue, contentCharacteristic):
     return model.getReq1(analyzer, initialValue,
                                   finalValue, contentCharacteristic)
 
+def getReq2(analyzer, energyMin, energyMax, danceMin, danceMax):
+    
+    energyMin = float(energyMin)
+    energyMax = float(energyMax)
 
+    danceMin = float(danceMin)
+    danceMax = float(danceMax)
+
+    return model.getReq2(analyzer, energyMin, energyMax, danceMin, danceMax)
     
 
 def events_load(analyzer):
