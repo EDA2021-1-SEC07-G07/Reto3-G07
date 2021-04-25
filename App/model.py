@@ -433,6 +433,10 @@ def getReq4(analyzer, final_dict):
                                      maptype='PROBING',
                                      comparefunction=compareArtists)
 
+    uniqueartists_map = m.newMap(numelements=30,
+                                     maptype='PROBING',
+                                     comparefunction=compareArtists)
+
     for key in final_dict.keys():
 
         genre_name = key
@@ -447,9 +451,16 @@ def getReq4(analyzer, final_dict):
         #Primer valor a mostrar -Total de eventos de escucha (por genero)
         tottracks_genre = sizes[0]
 
+
+        #Total de artistas únicos por género
+        uniqueartists_genre = sizes[1]
+        m.put(uniqueartists_map, genre_name, uniqueartists_genre)
+
+
         m.put(tottracks_map, genre_name, lt.newList('SINGLE_LINKED'))
 
         m.put(sizetracks_map, genre_name, tottracks_genre)
+
 
         #Se suma al total de los tracks para los géneros buscados
         tottracks_total += tottracks_genre 
@@ -473,22 +484,17 @@ def getReq4(analyzer, final_dict):
             
             if artist_count >= 10:
                 break
-
-        
-
-
-                
-    #sizetracks_map ---- Hash Map cuya llave es el género y cuyo valor es la cantidad de tracks
     
-    #sizetracks_map ---- Hash Map cuya llave es el género y cuyo valor una lista con los
-    #  10 ids de los primeros artistas en aparecer
+                
+    #tottracks_map ---- Hash Map cuya llave es el género y cuyo valor una lista con los 10 ids de los primeros artistas en aparecer 
+    
+    #sizetracks_map ---- Hash Map cuya llave es el género y cuyo valor es la cantidad de eventos de escucha por género
 
-    #TODO ----- Número de artistas únicos para todo lo buscado
-    #TODO ----- Tracks únicos de todo lo buscado
+    #uniqueartists_map ----- Número de artistas únicos para todo lo buscado
 
+    #tottracks_total ----- Eventos de escucha totales
 
-
-
+    return tottracks_total, sizetracks_map, uniqueartists_map, tottracks_map
 
 
 ##############################################################################################

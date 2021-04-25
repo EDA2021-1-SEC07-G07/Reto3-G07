@@ -42,6 +42,7 @@ def printMenu():
     print("4- Encontrar pistas para festejar según su rango de energía y bailabilidad")
     print("5- Encontrar pistas para estudiar según su rango de tempo e instrumentalidad")
     print("6- Estudiar los géneros musicales en el catálogo")
+    print("7- Indicar el género musical más escuchado en un tiempo determinado")
     print("0- Salir")
 
 tracksfile = 'user_track_hashtag_timestamp-small.csv'
@@ -208,7 +209,7 @@ while True:
     elif int(inputs[0]) == 6:
         Req4()
 
-       
+
 
     else:
         sys.exit(0)
