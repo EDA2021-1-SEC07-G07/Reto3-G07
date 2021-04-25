@@ -112,7 +112,7 @@ def events_load(analyzer):
 
     
     
-    return print_singlelinked(first_last_tracks,"PISTAS")
+    return print_singlelinked(first_last_tracks,"PISTAS ")
 
 
 
@@ -393,7 +393,36 @@ def getReq2(analyzer, energyMin, energyMax, danceMin, danceMax):
     return  fusion_map_size, random_list
 
 
-def getReq3(analyzer, final_dict):
+
+
+
+def getReq3(analyzer, instrumentalnessMin, instrumentalnessMax, tempoMin, tempoMax):
+    """
+    Retorna el numero de eventos de escucha en un rago de Instrumentalness and Tempo
+    """
+
+    node_list_instrumentalness=getTrackListByRange(analyzer,instrumentalnessMin, instrumentalnessMax, "instrumentalness")
+    node_list_tempo=getTrackListByRange(analyzer,tempoMin, tempoMax, "tempo")
+
+    unique_instrumentalness=UniqueMap(node_list_instrumentalness)
+    unique_tempo=UniqueMap(node_list_tempo)
+
+    fusion_map = fusionMaps(unique_instrumentalness, unique_tempo)
+
+    #Gets the number of unique tracks
+    fusion_map_size = m.size(fusion_map)
+
+    #Gets 5 random tracks
+    random_list = randomSubListFromMap(fusion_map, 5)
+    
+    return  fusion_map_size, random_list
+
+
+
+
+
+
+def getReq4(analyzer, final_dict):
 
     tottracks_total = 0
     tottracks_map = m.newMap(numelements=30,
@@ -445,10 +474,14 @@ def getReq3(analyzer, final_dict):
             if artist_count >= 10:
                 break
 
+        
+
+
                 
     #sizetracks_map ---- Hash Map cuya llave es el género y cuyo valor es la cantidad de tracks
     
-    #sizetracks_map ---- Hash Map cuya llave es el género y cuyo valor una lista con los 10 ids de los primeros artistas en aparecer
+    #sizetracks_map ---- Hash Map cuya llave es el género y cuyo valor una lista con los
+    #  10 ids de los primeros artistas en aparecer
 
     #TODO ----- Número de artistas únicos para todo lo buscado
     #TODO ----- Tracks únicos de todo lo buscado

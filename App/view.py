@@ -79,8 +79,9 @@ Menu principal
 
 
 def Req1():
-    print("Buscando eventos de escucha en un rango determinado para una característica:")
 
+    print("\n"*2)
+    print(("*"*15+"Requerimiento 1"+"*"*15).center(50),"\n"*2+"Buscando eventos de escucha en un rango determinado para una característica:".center(50),"\n"*5)
     contentCharacteristic = input("Ingrese la caracterítica de contenido sobre la que desea indagar: ").lower()
     initialValue = input("Valor mínimo de la característica escogida: ")
     finalValue = input("Valor máximo de la característica escogida: ")
@@ -119,7 +120,33 @@ def Req2():
 
 
 def Req3():
-    pass
+    print("\n"*2)
+    print(("*"*40+"Requerimiento 3"+"*"*40).center(80),"\n"*2+"Buscando eventos de escucha en un rango determinado para Instrumentalness and Tempo:".center(50),"\n"*5)
+
+
+    minInstrumentalness = input("Valor mínimo de la característica Instrumentalness: ")
+    maxInstrumentalness = input("Valor máximo de la característica Instrumentalness: ")
+
+    minTempo = input("Valor mínimo de la característica Tempo: ")
+    maxTempo = input("Valor máximo de la característica Tempo: ")
+
+    total = controller.getReq3(catalog, minInstrumentalness,maxInstrumentalness,minTempo,maxTempo)
+    if total!=None:
+        pistas_unicas_size = total[0]
+        pistas_aleatorias = total[1]
+
+        print("Total de pistas únicas dentro de los parametros establecidos: {}".format(pistas_unicas_size), "\n"*3)
+
+        text_total=print_singlelinked(pistas_aleatorias,"Pista Instrumentalness and Tempo")
+        print(text_total)
+
+    else:
+        print("\n"*5,"Error seleccionando los rangos de Instrumentalness and Tempo  pistas para festejar, intente nuevamente")
+        Req3()
+
+
+
+    
 
 def Req4():
     dict_generos = controller.newGeneros()
@@ -144,7 +171,7 @@ def Req4():
             final_dict[genre] = new_dict[genre]
             
 
-    total = controller.getReq3(catalog, final_dict)
+    total = controller.getReq4(catalog, final_dict)
 
 
 while True:

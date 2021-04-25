@@ -141,11 +141,18 @@ def getReq2(analyzer, energyMin, energyMax, danceMin, danceMax):
     except:
         return None
 
-def getReq3(analyzer, final_dict):
+def getReq3(analyzer, instrumentalnessMin, instrumentalnessMax, tempoMin, tempoMax):
     try:
-        return model.getReq3(analyzer, final_dict)
+        return model.getReq3(analyzer, instrumentalnessMin, instrumentalnessMax, tempoMin, tempoMax)
     except:
         return None
+
+def getReq4(analyzer, final_dict):
+    try:
+        return model.getReq4(analyzer, final_dict)
+    except:
+        return None
+
 
 def events_load(analyzer):
     return model.events_load(analyzer)
