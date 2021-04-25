@@ -47,7 +47,7 @@ def printMenu():
 
 tracksfile = 'user_track_hashtag_timestamp-small.csv'
 catalog = None
-
+final_dict = controller.newGeneros()
 
 def iterAddGenre(dict_generos):
 
@@ -161,8 +161,6 @@ def Req4():
 
     genre_list = genre_names.split(",")
 
-    final_dict = {}
-
     for genre in genre_list:
 
         genre = genre.strip()
@@ -173,6 +171,8 @@ def Req4():
             
 
     total = controller.getReq4(catalog, final_dict)
+
+    #TODO- BORRAR-##########################
     if total!=None:
         print(total[0])
         print(total[1])
@@ -181,6 +181,17 @@ def Req4():
 
     else:
         print("Error")
+    ###############################
+
+def Req5():
+
+    print("\n"*2)
+    print(("*"*40+"Requerimiento 5"+"*"*40).center(80),"\n"*2+"Buscando el género musical más escuchado en un tiempo determinado:".center(50),"\n"*5)
+    
+    initialDate = input("Hora Inicial (H:M:S): ")
+    finalDate = input("Hora Final (H:M:S): ")
+
+    total = controller.getReq5(catalog, initialDate, finalDate, final_dict)
 
 
 while True:
@@ -216,6 +227,9 @@ while True:
 
     elif int(inputs[0]) == 6:
         Req4()
+
+    elif int(inputs[0]) == 7:
+        Req5()
 
 
 

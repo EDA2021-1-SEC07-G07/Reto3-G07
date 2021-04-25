@@ -76,6 +76,7 @@ def newAnalyzer():
                 "mode": None,
                 "key": None,
 
+                "created_at": None,
                 "artist_id": None
 }
 
@@ -83,6 +84,10 @@ def newAnalyzer():
 
         if key == 'tracks': 
             analyzer[key] = lt.newList('SINGLE_LINKED', compareIds)
+
+        elif key == "created_at":
+            analyzer[key] = om.newMap(omaptype='RBT',
+                                comparefunction=compareDates)
 
         else:
             analyzer[key] = om.newMap(omaptype='RBT',
@@ -172,7 +177,13 @@ def addTrack(analyzer, track, updateId = True):
         else:
 
             try:
-                updateArtistIndex(analyzer[key], track, key)
+                
+                if key == "created_at":
+                   
+                    updateDateIndex(analyzer[key], track, key)
+
+                else:
+                    updateArtistIndex(analyzer[key], track, key)
 
             except Exception:
                 pass
@@ -289,6 +300,35 @@ def updateArtistIndex(map, track, key):
         datentry = me.getValue(entry)
     addArtistIndex(datentry, track)
     return map
+
+
+def updateDateIndex(map, track, key):
+    """
+    Se toma la fecha del crimen y se busca si ya existe en el arbol
+    dicha fecha.  Si es asi, se adiciona a su lista de crimenes
+    y se actualiza el indice de tipos de crimenes.
+
+    Si no se encuentra creado un nodo para esa fecha en el arbol
+    se crea y se actualiza el indice de tipos de crimenes
+    """
+
+    value = track[key].split()[1]
+    
+    value = datetime.datetime.strptime(value, '%H:%M:%S')
+
+
+    entry = om.get(map, value)
+
+    if entry is None:
+        datentry = newArtistDataEntry(track)
+        om.put(map, value, datentry)
+    else:
+        datentry = me.getValue(entry)
+    addArtistIndex(datentry, track)
+    return map
+
+
+
 
 def addArtistIndex(datentry, track):
     """
@@ -495,6 +535,26 @@ def getReq4(analyzer, final_dict):
     #tottracks_total ----- Eventos de escucha totales
 
     return tottracks_total, sizetracks_map, uniqueartists_map, tottracks_map
+    
+
+def getReq5(analyzer, initialDate, finalDate, final_dict):
+
+    tot_plays = 0
+    
+    node_list_date = getTrackListByDate(analyzer,initialDate, finalDate, "created_at")
+
+    #Se entra al arbol (ordenado por valor)
+    for node in lt.iterator(node_list_date):
+
+        #Se entra a los valores del mapa (lista con tracks)
+        track_lst =  node["lsttracks"]
+
+        for track in lt.iterator(track_lst):
+            #Se accede a cada track 
+            tot_plays += 1
+
+    #tot_plays ------- Total de reproducciones
+
 
 
 ##############################################################################################
@@ -506,6 +566,12 @@ def getTrackListByRange(analyzer, initialValue, finalValue, contentCharacteristi
     lst = om.values(analyzer[contentCharacteristic], initialValue, finalValue)
 
     return lst
+
+def getTrackListByDate(analyzer, initialValue, finalValue, contentCharacteristic):
+
+    lst = om.values(analyzer[contentCharacteristic], initialValue, finalValue)
+    return lst
+
 
 
 def getTreeMapSize(track_list):
@@ -657,4 +723,14 @@ def compareArtists(artist1, artist2):
     else:
         return -1
 
+def compareDates(date1, date2):
+    """
+    Compara dos fechas
+    """
+    if (date1 == date2):
+        return 0
+    elif (date1 > date2):
+        return 1
+    else:
+        return -1
 # Funciones de ordenamiento

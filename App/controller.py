@@ -27,7 +27,7 @@ from DISClib.ADT import orderedmap as om
 from DISClib.DataStructures import mapentry as me
 from DISClib.ADT import map as m
 from DISClib.ADT import list as lt
-
+import datetime
 """
 El controlador se encarga de mediar entre la vista y el modelo.
 """
@@ -150,6 +150,17 @@ def getReq3(analyzer, instrumentalnessMin, instrumentalnessMax, tempoMin, tempoM
 def getReq4(analyzer, final_dict):
     try:
         return model.getReq4(analyzer, final_dict)
+    except:
+        return None
+
+def getReq5(analyzer, initialDate, finalDate, final_dict):
+
+    try:
+        initialDate = datetime.datetime.strptime(initialDate, '%H:%M:%S')
+        finalDate = datetime.datetime.strptime(finalDate, '%H:%M:%S')
+
+    
+        return model.getReq5(analyzer, initialDate, finalDate, final_dict)
     except:
         return None
 
