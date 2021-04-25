@@ -399,11 +399,6 @@ def getReq4(analyzer, final_dict):
                                      maptype='PROBING',
                                      comparefunction=compareArtists)
 
-    #Este mapa es utilizado para revisar si un evento con un id único ya fue contado en el total
-    id_check_map = m.newMap(numelements=30,
-                                     maptype='PROBING',
-                                     comparefunction=compareArtists)
-
     for key in final_dict.keys():
 
         genre_name = key
