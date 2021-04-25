@@ -149,7 +149,8 @@ while True:
                 final_dict[genre] = new_dict[genre]
                 
 
-        total = controller.getReq3(catalog, final_dict)
+        total = controller.getReq4(catalog, final_dict)
+
 
     else:
         sys.exit(0)

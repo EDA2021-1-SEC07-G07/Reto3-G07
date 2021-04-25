@@ -135,9 +135,9 @@ def getReq2(analyzer, energyMin, energyMax, danceMin, danceMax):
     return model.getReq2(analyzer, energyMin, energyMax, danceMin, danceMax)
     
 
-def getReq3(analyzer, final_dict):
+def getReq4(analyzer, final_dict):
 
-    return model.getReq3(analyzer, final_dict)
+    return model.getReq4(analyzer, final_dict)
 
 
 def events_load(analyzer):
