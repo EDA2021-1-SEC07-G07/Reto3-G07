@@ -91,23 +91,7 @@ def newAnalyzer():
     return analyzer
 
 
-
-
-
-# Funciones para agregar informacion al catalogo
-
-def addGenero(dict_generos, name, min, max):
-
-    dict_generos[name] = {}
-
-    dict_generos[name]["min"] = min
-
-    dict_generos[name]["max"] = max
-
-    return dict_generos
-     
-
-
+# funciones para imprimir
 def events_load(analyzer):
     tracks=analyzer["tracks"]
 
@@ -125,16 +109,23 @@ def events_load(analyzer):
 
         begin-=1
         last+=1
-    text = ""
+
     
-    iterator=lt.iterator(first_last_tracks)
+    
+    return print_singlelinked(first_last_tracks,"PISTAS")
+
+
+
+def print_singlelinked(single_list,title):
+    iterator= lt.iterator(single_list)
 
     max_size=80 #tamaño de impresion 
     upper="-"*(max_size+18)+"\n"
-    
+    text = ""
     pos=1
+
     for i in iterator:
-        text += upper+"|{}|\n".format(("VIDEO "+str(pos)).center(max_size+16))+upper
+        text += upper+"|{}|\n".format((str(title)+str(pos)).center(max_size+16))+upper
         for j in i:
             a=str(j).center(15)
             b=str(i[j]).center(max_size)
@@ -144,7 +135,25 @@ def events_load(analyzer):
         pos+=1                
         text+="\n"*3
 
-    return text
+    return text   
+
+
+
+# Funciones para agregar informacion al catalogo
+
+def addGenero(dict_generos, name, min, max):
+
+    dict_generos[name] = {}
+
+    dict_generos[name]["min"] = min
+
+    dict_generos[name]["max"] = max
+
+    return dict_generos
+     
+
+
+
 
 
 

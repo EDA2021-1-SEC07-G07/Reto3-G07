@@ -68,10 +68,85 @@ def iterAddGenre(dict_generos):
 
     return dict_generos
 
+def print_singlelinked(single_list, title):
+    text=controller.print_singlelinked(single_list, title)
+    print(text)
+
 
 """
 Menu principal
 """
+
+
+def Req1():
+    print("Buscando eventos de escucha en un rango determinado para una característica:")
+
+    contentCharacteristic = input("Ingrese la caracterítica de contenido sobre la que desea indagar: ").lower()
+    initialValue = input("Valor mínimo de la característica escogida: ")
+    finalValue = input("Valor máximo de la característica escogida: ")
+
+    total = controller.getReq1(catalog, initialValue, finalValue, contentCharacteristic)
+    if total!=None:
+        print("\nTotal de eventos de escucha en el rango de valores para la característica elegida: " + str(total[0]))
+        print("\nTotal de artistas únicos en el rango de valores para la característica elegida: " + str(total[1]))
+
+    else:
+        print("\n"*5,"Error seleccionando los eventos de escucha, intente nuevamente")
+        Req1()
+             
+
+def Req2():
+    print("Buscando pistas únicas para festejar...")
+
+    minEnergy = input("Valor mínimo de la característica energy: ")
+    maxEnergy = input("Valor máximo de la característica energy: ")
+
+    minDance = input("Valor mínimo de la característica danceability: ")
+    maxDance = input("Valor máximo de la característica danceability: ")
+
+    total = controller.getReq2(catalog, minEnergy, maxEnergy ,  minDance, maxDance)
+    if total!=None:
+        pistas_unicas_size = total[0]
+        pistas_aleatorias = total[1]
+
+        print("Total de pistas únicas dentro de los parametros establecidos: {}".format(pistas_unicas_size), "\n"*3)
+
+        text_total=print_singlelinked(pistas_aleatorias,"Pistas")
+        print(text_total)
+    else:
+        print("\n"*5,"Error seleccionando las pistas para festejar, intente nuevamente")
+        Req2()
+
+
+def Req3():
+    pass
+
+def Req4():
+    dict_generos = controller.newGeneros()
+    print("Preparandose para estudiar los géneros musicales en el catalogo...")
+
+    print("Géneros musicales dispobles para realizar su búsqueda: ")
+
+    new_dict = iterAddGenre(dict_generos)
+
+    genre_names = input("Por favor ingrese los géneros sobre los que desea buscar separados por una coma: ")
+
+    genre_list = genre_names.split(",")
+
+    final_dict = {}
+
+    for genre in genre_list:
+
+        genre = genre.strip()
+
+        if genre in new_dict.keys():
+
+            final_dict[genre] = new_dict[genre]
+            
+
+    total = controller.getReq3(catalog, final_dict)
+
+
 while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
@@ -95,61 +170,18 @@ while True:
 
 
     elif int(inputs[0]) == 3:
-        print("Buscando eventos de escucha en un rango determinado para una característica:")
-
-        contentCharacteristic = input("Ingrese la caracterítica de contenido sobre la que desea indagar: ")
-        initialValue = input("Valor mínimo de la característica escogida: ")
-        finalValue = input("Valor máximo de la característica escogida: ")
-
-        total = controller.getReq1(catalog, initialValue, finalValue, contentCharacteristic)
-        print("\nTotal de eventos de escucha en el rango de valores para la característica elegida: " + str(total[0]))
-        print("\nTotal de artistas únicos en el rango de valores para la característica elegida: " + str(total[1]))
-
-    elif int(inputs[0]) == 4:
-        print("Buscando pistas únicas para festejar...")
-
-        minEnergy = input("Valor mínimo de la característica energy: ")
-        maxEnergy = input("Valor máximo de la característica energy: ")
-
-        minDance = input("Valor mínimo de la característica danceability: ")
-        maxDance = input("Valor máximo de la característica danceability: ")
-
-        total = controller.getReq2(catalog, minEnergy, maxEnergy ,  minDance, maxDance)
-
-        pistas_unicas_size = total[0]
-        pistas_aleatorias = total[1]
-
-        print("Total de pistas únicas dentro de los parametros establecidos: {}".format(pistas_unicas_size))
+        Req1()
         
+    elif int(inputs[0]) == 4:
+        Req2()
+
     elif int(inputs[0]) == 5:
-        pass
+        Req3()
 
     elif int(inputs[0]) == 6:
+        Req4()
 
-        dict_generos = controller.newGeneros()
-
-        print("Preparandose para estudiar los géneros musicales en el catalogo...")
-
-        print("Géneros musicales dispobles para realizar su búsqueda: ")
-
-        new_dict = iterAddGenre(dict_generos)
-
-        genre_names = input("Por favor ingrese los géneros sobre los que desea buscar separados por una coma: ")
-
-        genre_list = genre_names.split(",")
-
-        final_dict = {}
-
-        for genre in genre_list:
-
-            genre = genre.strip()
-
-            if genre in new_dict.keys():
-
-                final_dict[genre] = new_dict[genre]
-                
-
-        total = controller.getReq3(catalog, final_dict)
+       
 
     else:
         sys.exit(0)

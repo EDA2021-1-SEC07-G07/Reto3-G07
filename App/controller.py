@@ -118,27 +118,34 @@ def getReq1(analyzer, initialValue, finalValue, contentCharacteristic):
     """
     Retorna el total de crimenes en un rango de fechas
     """
-    initialValue = float(initialValue)
-    finalValue = float(finalValue)
 
-    return model.getReq1(analyzer, initialValue,
-                                  finalValue, contentCharacteristic)
+    try:
+        initialValue = float(initialValue)
+        finalValue = float(finalValue)
+
+        return model.getReq1(analyzer, initialValue,
+                                    finalValue, contentCharacteristic)
+    except:
+        return None
 
 def getReq2(analyzer, energyMin, energyMax, danceMin, danceMax):
-    
-    energyMin = float(energyMin)
-    energyMax = float(energyMax)
 
-    danceMin = float(danceMin)
-    danceMax = float(danceMax)
+    try:
+        energyMin = float(energyMin)
+        energyMax = float(energyMax)
 
-    return model.getReq2(analyzer, energyMin, energyMax, danceMin, danceMax)
-    
+        danceMin = float(danceMin)
+        danceMax = float(danceMax)
+
+        return model.getReq2(analyzer, energyMin, energyMax, danceMin, danceMax)
+    except:
+        return None
 
 def getReq3(analyzer, final_dict):
-
-    return model.getReq3(analyzer, final_dict)
-
+    try:
+        return model.getReq3(analyzer, final_dict)
+    except:
+        return None
 
 def events_load(analyzer):
     return model.events_load(analyzer)
@@ -189,8 +196,13 @@ def newGeneros():
 
     return dict_generos
 
-
-
 def addGenero(dict_generos, name, min, max):
      
     return model.addGenero(dict_generos, name, min, max)
+
+#funciones de impresion 
+
+def print_singlelinked(single_list,title):
+    return model.print_singlelinked(single_list,title)
+
+
