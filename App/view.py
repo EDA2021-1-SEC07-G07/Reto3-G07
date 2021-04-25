@@ -173,6 +173,14 @@ def Req4():
             
 
     total = controller.getReq4(catalog, final_dict)
+    if total!=None:
+        print(total[0])
+        print(total[1])
+        print(total[2])
+        print(total[3])
+
+    else:
+        print("Error")
 
 
 while True:
