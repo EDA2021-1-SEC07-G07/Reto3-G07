@@ -685,10 +685,13 @@ def getReq5(analyzer, initialDate, finalDate, final_dict):
                     if not m.contains(unique_map, track_id):
 
                         #En dado caso de que no lo contenga, añadimos un track a esa llave
-                        m.put(unique_map, track_id, track)
+                        m.put(unique_map, track_id, lt.newList("SINGLE_LINKED"))
 
+                    
+                    entry = m.get(unique_map, track_id)
+                    datentry = me.getValue(entry)
 
-
+                    lt.addLast(datentry, track)
 
 
     top_unique_tracks = m.size(unique_map)
