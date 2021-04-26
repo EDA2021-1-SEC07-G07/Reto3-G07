@@ -321,13 +321,33 @@ def updateDateIndex(map, track, key):
     entry = om.get(map, value)
 
     if entry is None:
-        datentry = newArtistDataEntry(track)
+        datentry = newHashtagDataEntry(track)
         om.put(map, value, datentry)
     else:
         datentry = me.getValue(entry)
-    addArtistIndex(datentry, track)
+    addHashtagIndex(datentry, track)
     return map
 
+
+def addHashtagIndex(datentry, track):
+    """
+    Actualiza un indice de tipo de crimenes.  Este indice tiene una lista
+    de crimenes y una tabla de hash cuya llave es el tipo de crimen y
+    el valor es una lista con los crimenes de dicho tipo en la fecha que
+    se está consultando (dada por el nodo del arbol)
+    """
+    lst = datentry['lsttracks']
+    lt.addLast(lst, track)
+    offenseIndex = datentry['HashtagIndex']
+    offentry = m.get(offenseIndex, track['hashtag'])
+    if (offentry is None):
+        entry = newHashtagEntry(track['hashtag'], track)
+        lt.addLast(entry['lsthashtags'], track)
+        m.put(offenseIndex, track['hashtag'], entry)
+    else:
+        entry = me.getValue(offentry)
+        lt.addLast(entry['lsthashtags'], track)
+    return datentry
 
 
 
@@ -361,6 +381,29 @@ def newArtistEntry(offensegrp, crime):
     ofentry['artist_id'] = offensegrp
     ofentry['lstartists'] = lt.newList('SINGLELINKED', compareArtists)
     return ofentry
+
+
+def newHashtagEntry(offensegrp, crime):
+    """
+    Crea una entrada en el indice por tipo de crimen, es decir en
+    la tabla de hash, que se encuentra en cada nodo del arbol.
+    """
+    ofentry = {'hashtag': None, 'lsthashtags': None}
+    ofentry['hashtag'] = offensegrp
+    ofentry['lsthashtags'] = lt.newList('SINGLELINKED', compareArtists)
+    return ofentry
+
+def newHashtagDataEntry(track):
+    """
+    Crea una entrada en el indice por fechas, es decir en el arbol
+    binario.
+    """
+    entry = {'HashtagIndex': None, 'lsttracks': None}
+    entry['HashtagIndex'] = m.newMap(numelements=30,
+                                     maptype='PROBING',
+                                     comparefunction=compareArtists)
+    entry['lsttracks'] = lt.newList('SINGLE_LINKED', compareValues)
+    return entry
 
 
 def newArtistDataEntry(track):
@@ -550,6 +593,14 @@ def getReq5(analyzer, initialDate, finalDate, final_dict):
     
     node_list_date = getTrackListByDate(analyzer,initialDate, finalDate, "created_at")
 
+    unique_map =  m.newMap(numelements=30,
+                                     maptype='PROBING',
+                                     comparefunction=compareArtists)
+
+    hash_map = m.newMap(numelements=30,
+                                     maptype='PROBING',
+                                     comparefunction=compareArtists)
+
     #Se entra al arbol (ordenado por valor)
     for node in lt.iterator(node_list_date):
 
@@ -604,10 +655,52 @@ def getReq5(analyzer, initialDate, finalDate, final_dict):
         genre_list = listSort(genre_list)
 
 
-    print(genre_list)
+    #Se accede al primer elemento de la lista (género con más reproducciones)
+    entry = lt.getElement(genre_list, 1)
+    top_genre = lt.getElement(entry, 1)
+
+    #Se itera sobre los tracks del primer género y se encuentran los tracks únicos
+    for node in lt.iterator(node_list_date):
+
+        #Se entra a los valores del mapa (lista con tracks)
+        hashtag_lst =  m.valueSet(node["HashtagIndex"])
+
+        for hashtag in lt.iterator(hashtag_lst):
+
+            track_list = hashtag["lsthashtags"]
+
+            for track in lt.iterator(track_list):
+
+                try:
+                    tempo = track["tempo"]
+                except:
+                    #En dado caso de que no exista información referente a tempo de un track, se ignora y se pasa al siguiente
+                    continue
+
+                track_id = track["track_id"]
+
+                if float(tempo) >= final_dict[top_genre]["min"] and float(tempo) <= final_dict[top_genre]["max"]:
+
+                    #Se revisa si ese track_id ya es la llave del unique_map
+                    if not m.contains(unique_map, track_id):
+
+                        #En dado caso de que no lo contenga, añadimos un track a esa llave
+                        m.put(unique_map, track_id, track)
+
+
+
+
+
+    top_unique_tracks = m.size(unique_map)
+
     #tot_plays ------- Total de reproducciones
     #genre_list ------- Lista ORDENADA con los géneros y sus reproducciones
+    #top_genre ------- Nombre del género con más reproducciones
+    #top_unique_tracks ------ Número de tracks únicos en el género con más reproducciones
 
+    print(genre_list)
+    print(top_genre)
+    print(top_unique_tracks)
     #TODO-----Obtener top genre y sacar el top 10 de tracks por número de canciones
 
 ##############################################################################################
