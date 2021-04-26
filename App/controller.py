@@ -155,14 +155,14 @@ def getReq4(analyzer, final_dict):
 
 def getReq5(analyzer, initialDate, finalDate, final_dict):
 
-    try:
-        initialDate = datetime.datetime.strptime(initialDate, '%H:%M:%S')
-        finalDate = datetime.datetime.strptime(finalDate, '%H:%M:%S')
+    #try:
+    initialDate = datetime.datetime.strptime(initialDate, '%H:%M:%S')
+    finalDate = datetime.datetime.strptime(finalDate, '%H:%M:%S')
 
-    
-        return model.getReq5(analyzer, initialDate, finalDate, final_dict)
-    except:
-        return None
+
+    return model.getReq5(analyzer, initialDate, finalDate, final_dict)
+    #except:
+        #return None
 
 
 def events_load(analyzer):

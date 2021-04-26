@@ -30,6 +30,7 @@ from DISClib.ADT import list as lt
 from DISClib.ADT import orderedmap as om
 from DISClib.DataStructures import mapentry as me
 from DISClib.ADT import map as m
+from DISClib.Algorithms.Sorting import mergesort as merge
 import datetime
 import random
 assert config
@@ -540,6 +541,12 @@ def getReq4(analyzer, final_dict):
 def getReq5(analyzer, initialDate, finalDate, final_dict):
 
     tot_plays = 0
+
+    genre_map = m.newMap(numelements=30,
+                                     maptype='PROBING',
+                                     comparefunction=compareArtists)
+
+    genre_list = lt.newList("SINGLE_LINKED")
     
     node_list_date = getTrackListByDate(analyzer,initialDate, finalDate, "created_at")
 
@@ -553,9 +560,55 @@ def getReq5(analyzer, initialDate, finalDate, final_dict):
             #Se accede a cada track 
             tot_plays += 1
 
+            try:
+                tempo = track["tempo"]
+            except:
+                #En dado caso de que no exista información referente a tempo de un track, se ignora y se pasa al siguiente
+                continue
+
+            for key in final_dict.keys():
+
+                if float(tempo) >= final_dict[key]["min"] and float(tempo) <= final_dict[key]["max"]:
+
+                    if m.contains(genre_map, key):
+
+                        entry = m.get(genre_map, key)
+
+                        datentry = me.getValue(entry)
+
+                        datentry += 1
+
+                        m.put(genre_map, key, datentry)
+
+                    else:
+                        m.put(genre_map, key, 0)
+
+    
+
+    for genre in lt.iterator(m.keySet(genre_map)):
+
+        mini_list =  lt.newList("SINGLE_LINKED")
+        
+        #Se añade el género como elemento 1 a la mini lista
+        lt.addLast(mini_list, genre)
+
+        #Se añade el valor del género como elemento 2 de la minilista
+        entry = m.get(genre_map, genre)
+        datentry = me.getValue(entry)
+        lt.addLast(mini_list, datentry)
+
+        #Se añade la mini lista a la lista con todos los géneros (lista para ser organizada)
+        lt.addLast(genre_list, mini_list)
+
+        #Se organiza la lista de generos
+        genre_list = listSort(genre_list)
+
+
+    print(genre_list)
     #tot_plays ------- Total de reproducciones
+    #genre_list ------- Lista ORDENADA con los géneros y sus reproducciones
 
-
+    #TODO-----Obtener top genre y sacar el top 10 de tracks por número de canciones
 
 ##############################################################################################
 ################# FUNCIONES AUXILIARES #######################################################
@@ -733,4 +786,18 @@ def compareDates(date1, date2):
         return 1
     else:
         return -1
+
+def compareListItems(i1, i2):
+
+    item1 = lt.getElement(i1, 2)
+    item2 =  lt.getElement(i2, 2)
+
+    return float(item1) > float(item2)
+
 # Funciones de ordenamiento
+def listSort(lst):
+
+    sorted_list = merge.sort(lst,compareListItems)
+
+    return sorted_list
+    
