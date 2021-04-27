@@ -84,7 +84,7 @@ def newAnalyzer():
     for key in analyzer.keys():
 
         if key == 'tracks': 
-            analyzer[key] = lt.newList('SINGLE_LINKED', compareIds)
+            analyzer[key] = lt.newList('ARRAY_LIST', compareIds)
 
         elif key == "created_at":
             analyzer[key] = om.newMap(omaptype='RBT',
@@ -104,7 +104,7 @@ def events_load(analyzer):
     begin=6
     last=lt.size(tracks)-5
 
-    first_last_tracks=lt.newList('SINGLE_LINKED')
+    first_last_tracks=lt.newList('ARRAY_LIST')
 
     for i in range(5):
         first_element=lt.getElement(tracks,begin)
@@ -224,7 +224,7 @@ def newDataEntry(track):
                                      maptype='PROBING',
                                      comparefunction=compareUsers)
 
-    entry['lsttracks'] = lt.newList('SINGLE_LINKED', compareValues)
+    entry['lsttracks'] = lt.newList('ARRAY_LIST', compareValues)
     return entry
 
 
@@ -402,7 +402,7 @@ def newHashtagDataEntry(track):
     entry['HashtagIndex'] = m.newMap(numelements=30,
                                      maptype='PROBING',
                                      comparefunction=compareArtists)
-    entry['lsttracks'] = lt.newList('SINGLE_LINKED', compareValues)
+    entry['lsttracks'] = lt.newList('ARRAY_LIST', compareValues)
     return entry
 
 
@@ -415,7 +415,7 @@ def newArtistDataEntry(track):
     entry['ArtistIndex'] = m.newMap(numelements=30,
                                      maptype='PROBING',
                                      comparefunction=compareArtists)
-    entry['lsttracks'] = lt.newList('SINGLE_LINKED', compareValues)
+    entry['lsttracks'] = lt.newList('ARRAY_LIST', compareValues)
     return entry
 
 # Funciones de consulta
@@ -541,7 +541,7 @@ def getReq4(analyzer, final_dict):
         m.put(uniqueartists_map, genre_name, uniqueartists_genre)
 
 
-        m.put(tottracks_map, genre_name, lt.newList('SINGLE_LINKED'))
+        m.put(tottracks_map, genre_name, lt.newList('ARRAY_LIST'))
 
         m.put(sizetracks_map, genre_name, tottracks_genre)
 
@@ -589,7 +589,7 @@ def getReq5(analyzer, initialDate, finalDate, final_dict):
                                      maptype='PROBING',
                                      comparefunction=compareArtists)
 
-    genre_list = lt.newList("SINGLE_LINKED")
+    genre_list = lt.newList("ARRAY_LIST")
     
     node_list_date = getTrackListByDate(analyzer,initialDate, finalDate, "created_at")
 
@@ -638,7 +638,7 @@ def getReq5(analyzer, initialDate, finalDate, final_dict):
 
     for genre in lt.iterator(m.keySet(genre_map)):
 
-        mini_list =  lt.newList("SINGLE_LINKED")
+        mini_list =  lt.newList("ARRAY_LIST")
         
         #Se añade el género como elemento 1 a la mini lista
         lt.addLast(mini_list, genre)
@@ -685,7 +685,7 @@ def getReq5(analyzer, initialDate, finalDate, final_dict):
                     if not m.contains(unique_map, track_id):
 
                         #En dado caso de que no lo contenga, añadimos un track a esa llave
-                        m.put(unique_map, track_id, lt.newList("SINGLE_LINKED"))
+                        m.put(unique_map, track_id, lt.newList("ARRAY_LIST"))
 
                     
                     entry = m.get(unique_map, track_id)
@@ -805,7 +805,7 @@ def randomSubListFromMap(map, numelements):
     value_list = m.valueSet(map)
     map_size = m.size(map)
 
-    random_list = lt.newList('SINGLE_LINKED', compareIds)
+    random_list = lt.newList('ARRAY_LIST', compareIds)
 
     for n in range(numelements):
 
