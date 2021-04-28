@@ -597,9 +597,6 @@ def getReq5(analyzer, initialDate, finalDate, final_dict):
                                      maptype='PROBING',
                                      comparefunction=compareArtists)
 
-    hash_map = m.newMap(numelements=30,
-                                     maptype='PROBING',
-                                     comparefunction=compareArtists)
 
     #Se entra al arbol (ordenado por valor)
     for node in lt.iterator(node_list_date):
@@ -652,7 +649,7 @@ def getReq5(analyzer, initialDate, finalDate, final_dict):
         lt.addLast(genre_list, mini_list)
 
         #Se organiza la lista de generos
-        genre_list = listSort(genre_list)
+        genre_list = listSort(genre_list, "ListItems")
 
 
     #Se accede al primer elemento de la lista (género con más reproducciones)
@@ -678,6 +675,7 @@ def getReq5(analyzer, initialDate, finalDate, final_dict):
                     continue
 
                 track_id = track["track_id"]
+                hash_value = track["hashtag"]
 
                 if float(tempo) >= final_dict[top_genre]["min"] and float(tempo) <= final_dict[top_genre]["max"]:
 
@@ -686,15 +684,24 @@ def getReq5(analyzer, initialDate, finalDate, final_dict):
 
                         #En dado caso de que no lo contenga, añadimos un track a esa llave
                         m.put(unique_map, track_id, lt.newList("ARRAY_LIST"))
-
-                    
+                        
                     entry = m.get(unique_map, track_id)
                     datentry = me.getValue(entry)
 
                     lt.addLast(datentry, track)
 
-
     top_unique_tracks = m.size(unique_map)
+
+
+    #Ahora unique_map tiene como llave cada track único y dentro una lista con los eventos de reproducción que tienen hashtag distinto
+    #Por lo tanto para encontrar el tamaño de esta lista interna determinará cuál tiene más hashtags únicos
+
+    #Se pasa el unique_map a una lista organizable
+    track_id_list = m.valueSet(unique_map)
+
+    #Se organiza esa lista por el valor de el tamaño de sus sub-listas
+    track_id_list = listSort(track_id_list)
+
 
     #tot_plays ------- Total de reproducciones
     #genre_list ------- Lista ORDENADA con los géneros y sus reproducciones
@@ -704,6 +711,7 @@ def getReq5(analyzer, initialDate, finalDate, final_dict):
     print(genre_list)
     print(top_genre)
     print(top_unique_tracks)
+    print(lt.getElement(track_id_list,1))
     #TODO-----Obtener top genre y sacar el top 10 de tracks por número de canciones
 
 ##############################################################################################
@@ -890,10 +898,24 @@ def compareListItems(i1, i2):
 
     return float(item1) > float(item2)
 
-# Funciones de ordenamiento
-def listSort(lst):
 
-    sorted_list = merge.sort(lst,compareListItems)
+def compareListSize(i1, i2):
+
+    item1 = lt.size(i1)
+    item2 =  lt.size(i2)
+
+    return float(item1) > float(item2)
+
+
+
+# Funciones de ordenamiento
+def listSort(lst, comparefunction = None):
+
+    if comparefunction == "ListItems":
+
+        sorted_list = merge.sort(lst,compareListItems)
+    
+    else:
+        sorted_list = merge.sort(lst,compareListSize)
 
     return sorted_list
-    
