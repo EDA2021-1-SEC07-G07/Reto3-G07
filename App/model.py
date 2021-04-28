@@ -685,10 +685,30 @@ def getReq5(analyzer, initialDate, finalDate, final_dict):
                         #En dado caso de que no lo contenga, añadimos un track a esa llave
                         m.put(unique_map, track_id, lt.newList("ARRAY_LIST"))
                         
+                        #Se añade el hash_map como primer valor de la lista dentro del mapa
+                        hash_map = m.newMap(numelements=30,
+                                     maptype='PROBING',
+                                     comparefunction=compareArtists)
+                        entry = m.get(unique_map, track_id)
+                        datentry = me.getValue(entry)
+                        lt.addFirst(datentry, hash_map)
+
+                
+
                     entry = m.get(unique_map, track_id)
                     datentry = me.getValue(entry)
 
-                    lt.addLast(datentry, track)
+
+                    #Se accede al hash_map (primer elemento)
+                    hash_map = lt.getElement(datentry, 1)
+                    
+
+                    #Se revisa si el track con hash único ya fue añadido y si este tiene información del vader
+                    if not m.contains(hash_map, hash_value):
+
+                        m.put(hash_map, hash_value, None)
+                        lt.addLast(datentry, track)
+                        
 
     top_unique_tracks = m.size(unique_map)
 
@@ -702,6 +722,8 @@ def getReq5(analyzer, initialDate, finalDate, final_dict):
     #Se organiza esa lista por el valor de el tamaño de sus sub-listas
     track_id_list = listSort(track_id_list)
 
+    #Se divide el track_id_list y se obtiene una lista con sus 10 primera canciones
+    track_id_sublist = lt.subList(track_id_list, 1, 10)
 
     #tot_plays ------- Total de reproducciones
     #genre_list ------- Lista ORDENADA con los géneros y sus reproducciones
@@ -711,7 +733,7 @@ def getReq5(analyzer, initialDate, finalDate, final_dict):
     print(genre_list)
     print(top_genre)
     print(top_unique_tracks)
-    print(lt.getElement(track_id_list,1))
+    print(track_id_sublist)
     #TODO-----Obtener top genre y sacar el top 10 de tracks por número de canciones
 
 ##############################################################################################
