@@ -729,12 +729,9 @@ def getReq5(analyzer, initialDate, finalDate, final_dict):
     #genre_list ------- Lista ORDENADA con los géneros y sus reproducciones
     #top_genre ------- Nombre del género con más reproducciones
     #top_unique_tracks ------ Número de tracks únicos en el género con más reproducciones
+    #track_id_sublist ------- Lista con 10 elementos: Top 10 tracks con más hashtags diferentes
 
-    print(genre_list)
-    print(top_genre)
-    print(top_unique_tracks)
-    print(track_id_sublist)
-    #TODO-----Obtener top genre y sacar el top 10 de tracks por número de canciones
+    return tot_plays, genre_list, top_genre, top_unique_tracks, track_id_sublist
 
 ##############################################################################################
 ################# FUNCIONES AUXILIARES #######################################################
