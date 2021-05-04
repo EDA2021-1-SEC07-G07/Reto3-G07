@@ -581,6 +581,57 @@ def getReq4(analyzer, final_dict):
     return tottracks_total, sizetracks_map, uniqueartists_map, tottracks_map
     
 
+
+def print_req4(tottracks_total, sizetracks_map, uniqueartists_map, tottracks_map):
+
+    space="\n"*2
+    text=("*"*40+"Requerimiento 4"+"*"*40).center(80)+space
+    
+
+   
+
+    max_size=80 #tamaño de impresion 
+    upper="-"*(max_size+18)+"\n"
+    
+    
+
+    genre_list=m.keySet(sizetracks_map)
+
+    
+
+    
+    genre_list=m.keySet(sizetracks_map)
+    for genre in  lt.iterator(genre_list):
+
+        pos=1
+        artist=m.get(uniqueartists_map, genre)['value']
+        tracks=m.get(sizetracks_map, genre)['value']
+        list_artist=m.get(tottracks_map, genre)['value']
+
+        text_value= upper+"|{}|\n".format(genre.center(max_size+16))+upper
+        text_info="{} reproductions: {} with {} diferentes artists".format(str(genre),str(tracks),str(artist))
+
+        text_value+="|{}|\n".format(text_info.center(max_size)+16)+upper
+        text_value+="|{}|\n".format(("TOP 10 ARTIST GENERE:  "+str(genre)).center(max_size+16))+upper
+        
+        for artist in lt.iterator(list_artist):
+            a=("Artist"+str(pos)).center(15)
+            b= str(artist).center(max_size)
+            value="|{}|{}|\n".format(a,b)
+            text_value+=value
+            text_value+=upper  
+            pos+=1
+        
+    
+        text+=text_value
+        text+="\n"*3
+
+    text+="Total of reproductions:  {}".format(str(tottracks_total))+space
+
+
+    return text
+
+
 def getReq5(analyzer, initialDate, finalDate, final_dict):
 
     tot_plays = 0

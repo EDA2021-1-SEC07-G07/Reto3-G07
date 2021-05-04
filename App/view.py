@@ -174,10 +174,9 @@ def Req4():
 
     #TODO- BORRAR-##########################
     if total!=None:
-        print(total[0])
-        print(total[1])
-        print(total[2])
-        print(total[3])
+
+        text=controller.print_req4(total[0],total[1],total[2],total[3])
+        print(text)
 
     else:
         print("Error")

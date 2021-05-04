@@ -223,4 +223,7 @@ def addGenero(dict_generos, name, min, max):
 def print_singlelinked(single_list,title):
     return model.print_singlelinked(single_list,title)
 
+def print_req4(tottracks_total, sizetracks_map, uniqueartists_map, tottracks_map):
+    return model.print_req4(tottracks_total, sizetracks_map, uniqueartists_map, tottracks_map)
+
 
