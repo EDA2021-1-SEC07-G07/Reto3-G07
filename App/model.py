@@ -611,7 +611,7 @@ def print_req4(tottracks_total, sizetracks_map, uniqueartists_map, tottracks_map
         text_value= upper+"|{}|\n".format(genre.center(max_size+16))+upper
         text_info="{} reproductions: {} with {} diferentes artists".format(str(genre),str(tracks),str(artist))
 
-        text_value+="|{}|\n".format(text_info.center(max_size)+16)+upper
+        text_value+="|{}|\n".format(text_info.center(max_size+16))+upper
         text_value+="|{}|\n".format(("TOP 10 ARTIST GENERE:  "+str(genre)).center(max_size+16))+upper
         
         for artist in lt.iterator(list_artist):
@@ -782,11 +782,68 @@ def getReq5(analyzer, initialDate, finalDate, final_dict):
     #top_unique_tracks ------ Número de tracks únicos en el género con más reproducciones
     #track_id_sublist ------- Lista con 10 elementos: Top 10 tracks con más hashtags diferentes
 
+    print_req5(tot_plays, genre_list, top_genre, top_unique_tracks, track_id_sublist)
+
     return tot_plays, genre_list, top_genre, top_unique_tracks, track_id_sublist
 
 ##############################################################################################
 ################# FUNCIONES AUXILIARES #######################################################
 ##############################################################################################
+
+
+def print_req5(tot_plays, genre_list, top_genre, top_unique_tracks, track_id_sublist):
+
+    space="\n"*2
+    text=("*"*40+"Requerimiento 5"+"*"*40).center(80)+space
+    
+
+   
+
+    max_size=80 #tamaño de impresion 
+    upper="-"*(max_size+18)+"\n"
+    
+    
+
+
+    print(tot_plays)
+    print(top_genre)
+    print(top_unique_tracks)
+    print(track_id_sublist)
+
+    for genre in  lt.iterator(genre_list):
+
+
+        print(genre)
+
+        """
+        pos=1
+        artist=m.get(uniqueartists_map, genre)['value']
+        tracks=m.get(sizetracks_map, genre)['value']
+        list_artist=m.get(tottracks_map, genre)['value']
+
+        text_value= upper+"|{}|\n".format(genre.center(max_size+16))+upper
+        text_info="{} reproductions: {} with {} diferentes artists".format(str(genre),str(tracks),str(artist))
+
+        text_value+="|{}|\n".format(text_info.center(max_size+16))+upper
+        text_value+="|{}|\n".format(("TOP 10 ARTIST GENERE:  "+str(genre)).center(max_size+16))+upper
+        
+        for artist in lt.iterator(list_artist):
+            a=("Artist"+str(pos)).center(15)
+            b= str(artist).center(max_size)
+            value="|{}|{}|\n".format(a,b)
+            text_value+=value
+            text_value+=upper  
+            pos+=1
+        
+    
+        text+=text_value
+        text+="\n"*3
+
+    text+="Total of reproductions:  {}".format(str(tottracks_total))+space"""
+
+
+    return text
+
 
 def getTrackListByRange(analyzer, initialValue, finalValue, contentCharacteristic):
 
