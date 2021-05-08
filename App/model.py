@@ -755,7 +755,7 @@ def getReq5(analyzer, initialDate, finalDate, final_dict):
                     
 
                     #Se revisa si el track con hash único ya fue añadido y si este tiene información del vader
-                    if not m.contains(hash_map, hash_value):
+                    if not m.contains(hash_map, hash_value) and "vader_avg" in track.keys():
 
                         m.put(hash_map, hash_value, None)
                         lt.addLast(datentry, track)
@@ -793,56 +793,70 @@ def getReq5(analyzer, initialDate, finalDate, final_dict):
 
 def print_req5(tot_plays, genre_list, top_genre, top_unique_tracks, track_id_sublist):
 
+    top_genre_info = lt.getElement(genre_list, 1)
+    top_genre_reproductions = lt.getElement(top_genre_info, 2)
+
     space="\n"*2
     text=("*"*40+"Requerimiento 5"+"*"*40).center(80)+space
     
-
-   
+    print("There is a total of {} reproductions between the established hours.".format(tot_plays))
 
     max_size=80 #tamaño de impresion 
     upper="-"*(max_size+18)+"\n"
-    
-    
-
-
-    print(tot_plays)
-    print(top_genre)
-    print(top_unique_tracks)
-    print(track_id_sublist)
-
-    for genre in  lt.iterator(genre_list):
-
-
-        print(genre)
-
-        """
-        pos=1
-        artist=m.get(uniqueartists_map, genre)['value']
-        tracks=m.get(sizetracks_map, genre)['value']
-        list_artist=m.get(tottracks_map, genre)['value']
-
-        text_value= upper+"|{}|\n".format(genre.center(max_size+16))+upper
-        text_info="{} reproductions: {} with {} diferentes artists".format(str(genre),str(tracks),str(artist))
-
-        text_value+="|{}|\n".format(text_info.center(max_size+16))+upper
-        text_value+="|{}|\n".format(("TOP 10 ARTIST GENERE:  "+str(genre)).center(max_size+16))+upper
+    text_value=""
+    pos=1
+    text_value+=upper
+    text_value+="|{}|\n".format(("GENRES SORTED REPRODUCTIONS").center(15+max_size))+upper
+    for i in lt.iterator(genre_list):
         
-        for artist in lt.iterator(list_artist):
-            a=("Artist"+str(pos)).center(15)
-            b= str(artist).center(max_size)
-            value="|{}|{}|\n".format(a,b)
-            text_value+=value
-            text_value+=upper  
-            pos+=1
-        
+        tupla=i['elements']
+        genre=tupla[0]
+        reps=tupla[1]
+      
+        a=("Top"+str(pos)).center(15)
+        b= (str(genre)+" with "+str(reps)+" reproductions").center(max_size)
+        value="|{}|{}|\n".format(a,b)
+        text_value+=value
+        text_value+=upper  
+        pos+=1
+
+
+    print("The top genre is {} with {} reproductions. \n".format(top_genre, top_genre_reproductions))
+
     
-        text+=text_value
-        text+="\n"*3
+    
+    space="\n"*2
+    text=("="*40+"{} SENTIMENT ANALYSIS".format(top_genre)+"="*40).center(80)+space
 
-    text+="Total of reproductions:  {}".format(str(tottracks_total))+space"""
 
+    text_info="{} has {} unique tracks...".format(top_genre,  top_unique_tracks)
 
-    return text
+    text_value+="|{}|\n".format(text_info.center(max_size+16))+upper
+    text_value+="|{}|\n".format(("The first TOP 10 tracks are: ").center(max_size+16))+upper
+        
+    track_count = 0
+
+    for track in lt.iterator(track_id_sublist):
+
+        number_hashtags = lt.size(track)
+
+        try:
+            track_info = lt.getElement(track, 2)
+
+            track_id = track_info["track_id"]
+
+            vader_avg = track_info["vader_avg"]
+
+            track_count += 1
+
+            text_value += "\n TOP {} Track: {} with {} hashtags and VADER = {}".format(track_count, track_id, number_hashtags, vader_avg)
+
+        except:
+            pass
+
+    text+=text_value
+    
+    print(text)
 
 
 def getTrackListByRange(analyzer, initialValue, finalValue, contentCharacteristic):

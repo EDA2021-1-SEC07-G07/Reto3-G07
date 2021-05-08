@@ -193,9 +193,8 @@ def Req5():
     total = controller.getReq5(catalog, initialDate, finalDate, final_dict)
 
     if total !=None:
-
-        text_final=controller.print_req4(total[0], total[1], total[2], total[3])
-        print(text_final)
+        
+        pass
 
     else:
         print("Error escribir hora inicial y final nievamente")
