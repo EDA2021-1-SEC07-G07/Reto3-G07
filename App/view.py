@@ -150,6 +150,9 @@ def Req3():
     
 
 def Req4():
+
+    search_dict = {}
+
     dict_generos = controller.newGeneros()
     print("Preparandose para estudiar los géneros musicales en el catalogo...")
 
@@ -167,10 +170,10 @@ def Req4():
 
         if genre in new_dict.keys():
 
-            final_dict[genre] = new_dict[genre]
+            search_dict[genre] = new_dict[genre]
             
 
-    total = controller.getReq4(catalog, final_dict)
+    total = controller.getReq4(catalog, search_dict)
 
     #TODO- BORRAR-##########################
     if total!=None:
@@ -193,7 +196,7 @@ def Req5():
     total = controller.getReq5(catalog, initialDate, finalDate, final_dict)
 
     if total !=None:
-        
+
         pass
 
     else:
