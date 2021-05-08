@@ -756,9 +756,9 @@ def getReq5(analyzer, initialDate, finalDate, final_dict):
 
                     #Se revisa si el track con hash único ya fue añadido y si este tiene información del vader
                     if not m.contains(hash_map, hash_value) and "vader_avg" in track.keys():
-
-                        m.put(hash_map, hash_value, None)
-                        lt.addLast(datentry, track)
+                        if track["vader_avg"] != "":
+                            m.put(hash_map, hash_value, None)
+                            lt.addLast(datentry, track)
                         
 
     top_unique_tracks = m.size(unique_map)
