@@ -28,6 +28,9 @@ from DISClib.DataStructures import mapentry as me
 from DISClib.ADT import map as m
 from DISClib.ADT import list as lt
 import datetime
+
+import time
+import tracemalloc
 """
 El controlador se encarga de mediar entre la vista y el modelo.
 """
@@ -48,6 +51,13 @@ def loadData(analyzer, tracksfile):
     """
     Carga los datos de los archivos CSV en el modelo
     """
+    delta_time = -1.0
+    delta_memory = -1.0
+
+    tracemalloc.start()
+    start_time = getTime()
+    start_memory = getMemory()
+
 
     sentimentsfile =  cf.data_dir + "sentiment_values.csv"
     input_sentiments = csv.DictReader(open(sentimentsfile, encoding="utf-8"),
@@ -114,17 +124,33 @@ def loadData(analyzer, tracksfile):
     model.iterateCompleteCatalog(analyzer)
 
 
+    stop_memory = getMemory()
+    stop_time = getTime()
+    tracemalloc.stop()
+
+    delta_time = stop_time - start_time
+    delta_memory = deltaMemory(start_memory, stop_memory)
+
+
+    addTime(analyzer,delta_time,delta_memory,"carga")
+
+
 def getReq1(analyzer, initialValue, finalValue, contentCharacteristic):
     """
     Retorna el total de crimenes en un rango de fechas
     """
 
     try:
+        start=start_functions()
         initialValue = float(initialValue)
         finalValue = float(finalValue)
 
-        return model.getReq1(analyzer, initialValue,
+        value=model.getReq1(analyzer, initialValue,
                                     finalValue, contentCharacteristic)
+        finish=finish_functions()
+        calculus_of_memorytime(analyzer, start, finish, "Req1")
+        
+        return value
     except:
         return None
 
@@ -136,33 +162,58 @@ def getReq2(analyzer, energyMin, energyMax, danceMin, danceMax):
 
         danceMin = float(danceMin)
         danceMax = float(danceMax)
-
-        return model.getReq2(analyzer, energyMin, energyMax, danceMin, danceMax)
+        
+        start=start_functions()
+        
+        value=model.getReq2(analyzer, energyMin, energyMax, danceMin, danceMax)
+        
+        finish=finish_functions()
+        calculus_of_memorytime(analyzer, start, finish, "Req2")
+        
+        return value 
     except:
         return None
 
 def getReq3(analyzer, instrumentalnessMin, instrumentalnessMax, tempoMin, tempoMax):
     try:
-        return model.getReq3(analyzer, instrumentalnessMin, instrumentalnessMax, tempoMin, tempoMax)
+
+        start=start_functions()
+        
+        value=model.getReq3(analyzer, instrumentalnessMin, instrumentalnessMax, tempoMin, tempoMax)
+        
+        finish=finish_functions()
+        calculus_of_memorytime(analyzer, start, finish, "Req3")
+
+        return value
     except:
         return None
 
 def getReq4(analyzer, final_dict):
     try:
-        return model.getReq4(analyzer, final_dict)
+        start=start_functions()
+        value=model.getReq4(analyzer, final_dict)
+        finish=finish_functions()
+        calculus_of_memorytime(analyzer, start, finish, "Req4")
+
+        return value 
     except:
         return None
 
 def getReq5(analyzer, initialDate, finalDate, final_dict):
 
-    #try:
-    initialDate = datetime.datetime.strptime(initialDate, '%H:%M:%S')
-    finalDate = datetime.datetime.strptime(finalDate, '%H:%M:%S')
+    try:
+        start=start_functions()
 
+        initialDate = datetime.datetime.strptime(initialDate, '%H:%M:%S')
+        finalDate = datetime.datetime.strptime(finalDate, '%H:%M:%S')
+        value=model.getReq5(analyzer, initialDate, finalDate, final_dict)
+        
+        finish=finish_functions()
+        calculus_of_memorytime(analyzer, start, finish, "Req5")
 
-    return model.getReq5(analyzer, initialDate, finalDate, final_dict)
-    #except:
-        #return None
+        return value
+    except:
+        return None
 
 
 def events_load(analyzer):
@@ -227,3 +278,65 @@ def print_req4(tottracks_total, sizetracks_map, uniqueartists_map, tottracks_map
     return model.print_req4(tottracks_total, sizetracks_map, uniqueartists_map, tottracks_map)
 
 
+def print_req5(tot_plays, genre_list, top_genre, top_unique_tracks, track_id_sublist):
+    return model.print_req5(tot_plays, genre_list, top_genre, top_unique_tracks, track_id_sublist)
+
+
+# ======================================
+# Funciones para medir tiempo y memoria
+# ======================================
+def addTime(analyzer,time,memory, label):
+    return model.addTime(analyzer,time,memory,label)
+
+def start_functions():
+    # Funciones de tiempo para las graficas
+    delta_time=-1.0
+    delta_memory=-1.0
+    tracemalloc.start()
+    start_time=getTime()
+    start_memory=getMemory()
+    return  start_time, start_memory
+
+def finish_functions():
+    stop_time=getTime()
+    stop_memory=getMemory()
+    tracemalloc.stop()
+    return stop_time, stop_memory
+
+def calculus_of_memorytime(analyzer,start:tuple, finish:tuple, label):
+    delta_time=finish[0]-start[0]
+    delta_memory=deltaMemory(start[1], finish[1])
+    
+    print(delta_time,delta_memory)
+    addTime(analyzer,delta_time,delta_memory,label)
+
+    return analyzer
+
+def getTime():
+    """
+    devuelve el instante tiempo de procesamiento en milisegundos
+    """
+    return float(time.perf_counter()*1000)
+
+
+def getMemory():
+    """
+    toma una muestra de la memoria alocada en instante de tiempo
+    """
+    return tracemalloc.take_snapshot()
+
+
+def deltaMemory(start_memory, stop_memory):
+    """
+    calcula la diferencia en memoria alocada del programa entre dos
+    instantes de tiempo y devuelve el resultado en bytes (ej.: 2100.0 B)
+    """
+    memory_diff = stop_memory.compare_to(start_memory, "filename")
+    delta_memory = 0.0
+
+    # suma de las diferencias en uso de memoria
+    for stat in memory_diff:
+        delta_memory = delta_memory + stat.size_diff
+    # de Byte -> kByte
+    delta_memory = delta_memory/1024.0
+    return delta_memory

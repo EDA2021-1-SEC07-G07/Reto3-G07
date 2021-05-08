@@ -23,6 +23,7 @@
 import config as cf
 import sys
 import controller
+import graph
 from DISClib.ADT import list as lt
 assert cf
 
@@ -43,6 +44,7 @@ def printMenu():
     print("5- Encontrar pistas para estudiar según su rango de tempo e instrumentalidad")
     print("6- Estudiar los géneros musicales en el catálogo")
     print("7- Indicar el género musical más escuchado en un tiempo determinado")
+    print("8-Gráficas de tiempo y memoria")
     print("0- Salir")
 
 tracksfile = 'user_track_hashtag_timestamp-small.csv'
@@ -196,14 +198,12 @@ def Req5():
     total = controller.getReq5(catalog, initialDate, finalDate, final_dict)
 
     if total !=None:
-
-        pass
-
+        text=controller.print_req5(total[0],total[1],total[2],total[3],total[4])
+        print(text)
+        
     else:
         print("Error escribir hora inicial y final nievamente")
         Req5()
-
-
 
 
 
@@ -245,7 +245,9 @@ while True:
 
     elif int(inputs[0]) == 7:
         Req5()
-
+    
+    elif int(inputs[0]) == 8:
+        graph.print_execution_time(catalog)
 
 
     else:

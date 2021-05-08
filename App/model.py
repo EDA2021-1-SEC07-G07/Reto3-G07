@@ -78,7 +78,8 @@ def newAnalyzer():
                 "key": None,
 
                 "created_at": None,
-                "artist_id": None
+                "artist_id": None,
+                "times":None
 }
 
     for key in analyzer.keys():
@@ -89,7 +90,8 @@ def newAnalyzer():
         elif key == "created_at":
             analyzer[key] = om.newMap(omaptype='RBT',
                                 comparefunction=compareDates)
-
+        elif key== "times": 
+            analyzer[key] = lt.newList()
         else:
             analyzer[key] = om.newMap(omaptype='RBT',
                                 comparefunction=compareValues)
@@ -98,6 +100,15 @@ def newAnalyzer():
 
 
 # funciones para imprimir
+
+def addTime(catalog,time,memory, label):
+    info={
+        "label":label,
+        "time":time,
+        "memory":memory,
+    }
+    lt.addLast(catalog['times'], info)
+
 def events_load(analyzer):
     tracks=analyzer["tracks"]
 
@@ -856,7 +867,7 @@ def print_req5(tot_plays, genre_list, top_genre, top_unique_tracks, track_id_sub
 
     text+=text_value
     
-    print(text)
+    return text
 
 
 def getTrackListByRange(analyzer, initialValue, finalValue, contentCharacteristic):
