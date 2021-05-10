@@ -228,6 +228,9 @@ def tracksSize(analyzer):
     return model.tracksSize(analyzer)
 
 
+
+
+
 def artistsSize(analyzer):
     """
     Numero de artistas leidos

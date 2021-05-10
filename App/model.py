@@ -810,7 +810,7 @@ def print_req5(tot_plays, genre_list, top_genre, top_unique_tracks, track_id_sub
     space="\n"*2
     text=("*"*40+"Requerimiento 5"+"*"*40).center(80)+space
     
-    print("There is a total of {} reproductions between the established hours.".format(tot_plays))
+    text+="There is a total of {} reproductions between the established hours.".format(tot_plays)
 
     max_size=80 #tamaño de impresion 
     upper="-"*(max_size+18)+"\n"
@@ -831,20 +831,29 @@ def print_req5(tot_plays, genre_list, top_genre, top_unique_tracks, track_id_sub
         text_value+=upper  
         pos+=1
 
-
-    print("The top genre is {} with {} reproductions. \n".format(top_genre, top_genre_reproductions))
-
-    
-    
     space="\n"*2
-    text=("="*40+"{} SENTIMENT ANALYSIS".format(top_genre)+"="*40).center(80)+space
+    text+=text_value
+    text+=space
+    text+="The top genre is {} with {} reproductions. \n".format(top_genre, top_genre_reproductions)
 
+    
+    
+    upper="-"*(max_size+20)+"\n"
+    text+=("="*40+"{} SENTIMENT ANALYSIS".format(top_genre)+"="*40).center(80)+space
+    text+=space
 
     text_info="{} has {} unique tracks...".format(top_genre,  top_unique_tracks)
 
-    text_value+="|{}|\n".format(text_info.center(max_size+16))+upper
-    text_value+="|{}|\n".format(("The first TOP 10 tracks are: ").center(max_size+16))+upper
-        
+    text_value=upper+"|{}|\n".format(text_info.center(max_size+20))+upper
+    text_value+=upper+"|{}|\n".format(("The first TOP 10 tracks are: ").center(max_size+20))+upper
+    
+    
+    c="Number Hashtags".center(15)
+    d="Vader average".center(15)
+    
+    a="Number Track".center(15)
+    b="Track Id".center(max_size-30)
+    text_value+="|{}|{}|{}|{}|\n".format(a,b,c,d)+upper
     track_count = 0
 
     for track in lt.iterator(track_id_sublist):
@@ -860,12 +869,18 @@ def print_req5(tot_plays, genre_list, top_genre, top_unique_tracks, track_id_sub
 
             track_count += 1
 
-            text_value += "\n TOP {} Track: {} with {} hashtags and VADER = {}".format(track_count, track_id, number_hashtags, vader_avg)
+
+            a=str(track_count).center(15)
+            b=str(track_id).center(max_size-30)
+            c=str(number_hashtags).center(15)
+            d=str(vader_avg).center(15)
+            text_value+="|{}|{}|{}|{}|\n".format(a,b,c,d)+upper
+            #text_value += "\n TOP {} Track: {} with {} hashtags and VADER = {}".format(track_count, track_id, number_hashtags, vader_avg)
 
         except:
             pass
 
-    text+=text_value
+    text+=text_value+space
     
     return text
 
